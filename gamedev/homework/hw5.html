@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <title>Ryan's Animation</title>
+</head>
+
+<body onload="loadComplete()" bgcolor="#282a36" text="#ff79c6">
+    <center>
+        <canvas id="theCanvas" tabindex="1" width="640" height="480"></canvas>
+        <h2 id="p1_score">Player 1 Score: 0</h2>
+        <h2 id="p2_score">Player 2 Score: 0</h2>
+        <h2>Use left/right/up/down to move pounce (player 1)</h2>
+        <h2>Use WASD to move the koala (player 2)</h2>
+    </center>
+
+    <script type="application/javascript">
+        var INTERVAL = 50;
+        var DEBUG = false; //true;
+
+        var canvas; // The canvas shown on the page.
+        var ctx; // The context, used to access the canvas.
+
+        var sprite_row = 0; // Row of the graphic to show
+        var sprite_col = 0; // Col of the graphic to show
+        var max_sprite_row = 8; // How many rows of images
+        var max_sprite_col = 8; // How many columns of images
+
+        var sprite_width = 32; // Width, Height of each subimage
+        var sprite_height = 32;
+        var speed = 10;
+
+        var p1_x = 100; // Position of sprite on the canvas
+        var p1_y = 100;
+        var p1_image = new Image();
+        p1_image.src = "pounce.png";
+
+        var p2_x = 150;
+        var p2_y = 150;
+        var p2_image = new Image();
+        p2_image.src = "koala.png";
+
+        var balloons_image = new Image();
+        balloons_image.src = "balloons.png";
+        var isTaken = true;
+        var isTakenNum = -1;
+
+        var balloon_image_x = [0, 0, 0, 0, 0];
+        var balloon_image_y = [0, 0, 0, 0, 0];
+
+        var p1_score = 0;
+        var p2_score = 0;
+
+        // Set up a timer to execute every 50 ms.
+        var myInterval;
+
+        function Tick() {
+            // Erase the sprite from its current location.
+            eraseSprite();
+
+            // Show a new image
+            drawSprite();
+        }
+
+        function loadComplete() {
+            console.log("Load is complete.");
+            canvas = document.getElementById("theCanvas");
+            ctx = canvas.getContext("2d");
+
+            var width = canvas.width;
+            var height = canvas.height;
+
+            balloon_image_x = [
+                Math.floor(Math.random() * (width - 32)),
+                Math.floor(Math.random() * (width - 32)),
+                Math.floor(Math.random() * (width - 32)),
+                Math.floor(Math.random() * (width - 32)),
+                Math.floor(Math.random() * (width - 32)),
+            ];
+            balloon_image_y = [
+                Math.floor(Math.random() * (height - 32)),
+                Math.floor(Math.random() * (height - 32)),
+                Math.floor(Math.random() * (height - 32)),
+                Math.floor(Math.random() * (height - 32)),
+                Math.floor(Math.random() * (height - 32)),
+            ];
+            myInterval = self.setInterval(function () {
+                Tick();
+            }, INTERVAL);
+        }
+
+        function eraseSprite() {
+            var canvas = document.getElementById("theCanvas");
+            var width = canvas.width;
+            var height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+        }
+
+        function drawSprite() {
+            var canvas = document.getElementById("theCanvas");
+            var width = canvas.width;
+            var height = canvas.height;
+
+            // draw p1
+            ctx.drawImage(
+                p1_image,
+                sprite_col * sprite_width,
+                sprite_row * sprite_height,
+                sprite_width,
+                sprite_height,
+                p1_x,
+                p1_y,
+                sprite_width,
+                sprite_height
+            );
+
+            // draw p2
+            ctx.drawImage(
+                p2_image,
+                sprite_col * sprite_width,
+                sprite_row * sprite_height,
+                sprite_width,
+                sprite_height,
+                p2_x,
+                p2_y,
+                sprite_width,
+                sprite_height
+            );
+
+            for (let i = 0; i < balloon_image_x.length; i++) {
+                ctx.drawImage(
+                    balloons_image,
+                    sprite_col * sprite_width,
+                    sprite_row * sprite_height,
+                    sprite_width,
+                    sprite_height,
+                    balloon_image_x[i],
+                    balloon_image_y[i],
+                    sprite_width,
+                    sprite_height
+                );
+            }
+
+            // update the next image to show
+            //SpriteCol++;
+            if (sprite_col >= max_sprite_col) sprite_col = 0;
+        }
+
+        function checkCollision() {
+            // see if the p2 icon is touching the diamond
+            for (let i = 0; i < balloon_image_x.length; i++) {
+                //first, check if both players have reached this item at the same time
+                // if this happens, simply move the diamond to a new spot instead of removing it
+                // this way, players have an equal chance of getting the next diamond
+                if (
+                    ((p2_x >= balloon_image_x[i] && p2_x <= balloon_image_x[i] + 32) ||
+                        (p2_x + 32 >= balloon_image_x[i] && p2_x + 32 <= balloon_image_x[i] + 32)) &&
+                    ((p2_y >= balloon_image_y[i] && p2_y <= balloon_image_y[i] + 32) ||
+                        (p2_y + 32 >= balloon_image_y[i] && p2_y + 32 <= balloon_image_y[i] + 32)) &&
+                    ((p1_x >= balloon_image_x[i] && p1_x <= balloon_image_x[i] + 32) ||
+                        (p1_x + 32 >= balloon_image_x[i] && p1_x + 32 <= balloon_image_x[i] + 32)) &&
+                    ((p1_y >= balloon_image_y[i] && p1_y <= balloon_image_y[i] + 32) ||
+                        (p1_y + 32 >= balloon_image_y[i] && p1_y + 32 <= balloon_image_y[i] + 32))
+                ) {
+                    balloon_image_x[i] = Math.floor(Math.random() * (width - 32));
+                    balloon_image_y[i] = Math.floor(Math.random() * (height - 32));
+                }
+
+                // check if player 2 reached the diamond
+                if (
+                    ((p2_x >= balloon_image_x[i] && p2_x <= balloon_image_x[i] + 32) ||
+                        (p2_x + 32 >= balloon_image_x[i] && p2_x + 32 <= balloon_image_x[i] + 32)) &&
+                    ((p2_y >= balloon_image_y[i] && p2_y <= balloon_image_y[i] + 32) ||
+                        (p2_y + 32 >= balloon_image_y[i] && p2_y + 32 <= balloon_image_y[i] + 32))
+                ) {
+                    p2_score += 10;
+                    document.getElementById("p2_score").innerHTML =
+                        "Player 2 Score: " + p2_score;
+                    balloon_image_x.splice(i, 1);
+                    balloon_image_y.splice(i, 1);
+                }
+
+                //check if player 1 reached the diamond
+                if (
+                    ((p1_x >= balloon_image_x[i] && p1_x <= balloon_image_x[i] + 32) ||
+                        (p1_x + 32 >= balloon_image_x[i] && p1_x + 32 <= balloon_image_x[i] + 32)) &&
+                    ((p1_y >= balloon_image_y[i] && p1_y <= balloon_image_y[i] + 32) ||
+                        (p1_y + 32 >= balloon_image_y[i] && p1_y + 32 <= balloon_image_y[i] + 32))
+                ) {
+                    p1_score += 10;
+                    document.getElementById("p1_score").innerHTML =
+                        "Player 1 Score: " + p1_score;
+                    balloon_image_x.splice(i, 1);
+                    balloon_image_y.splice(i, 1);
+                }
+            }
+        }
+
+        // What to do when the user presses a key.
+        function whenKeyPressed(key) {
+            var canvas = document.getElementById("theCanvas");
+            var width = canvas.width;
+            var height = canvas.height;
+
+            switch (key) {
+                case "ArrowLeft":  // left arrow was pressed
+                    if (p1_x > 0) {
+                        p1_x -= speed;
+                    }
+                    break;
+                case "ArrowUp":  // up arrow was pressed
+                    if (p1_y > 0) {
+                        p1_y -= speed;
+                    }
+                    break;
+                case "ArrowRight":  // right arrow was pressed
+                    if (p1_x < width - sprite_width) {
+                        p1_x += speed;
+                    }
+                    break
+                case "ArrowDown":  // down arrow was pressed
+                    if (p1_y < height - sprite_height) {
+                        p1_y += speed;
+                    }
+                    break;
+                case "w": // w up
+                    if (p2_y > 0) {
+                        p2_y -= speed;
+                    }
+                    break;
+                case "a": // a left
+                    if (p2_x > 0) {
+                        p2_x -= speed;
+                    }
+                    break;
+                case "s": // s down
+                    if (p2_y < height - sprite_height) {
+                        p2_y += speed;
+                    }
+                    break;
+                case "d": // d right
+                    if (p2_x < width - sprite_width) {
+                        p2_x += speed;
+                    }
+                    break;
+            }
+            checkCollision();
+        }
+
+        // Handle key presses
+        document['onkeydown'] = function (event) {
+            event = event || window.event;
+            var key = event.key || event.cursor;
+            whenKeyPressed(key);
+        };
+    </script>
+</body>
+
+</html>

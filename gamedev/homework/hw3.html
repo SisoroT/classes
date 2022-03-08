@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <title>Ryan's Simple Animation</title>
+</head>
+
+<body onload="loadComplete()" bgcolor="#282a36" text="#ff79c6" style>
+
+    <center>
+        <canvas id="theCanvas" tabindex="1" width="640" height="480"></canvas>
+        <h2>Press the arrows to move!</h2>
+    </center>
+
+    <script type="application/javascript">
+        var INTERVAL = 50;
+        var DEBUG = false; //true;
+
+        var canvas;             // The canvas shown on the page.
+        var ctx;                // The context, used to access the canvas.
+
+        var SpriteRow = 0;      // Row of the graphic to show
+        var SpriteCol = 0;      // Col of the graphic to show
+        var MaxSpriteRow = 0;   // How many rows of images
+        var MaxSpriteCol = 0;  // How many columns of images
+
+        var SpriteX = 0;      // Position of sprite on the canvas
+        var SpriteY = 0;
+        var SpriteWidth = 32;   // Width, Height of each subimage
+        var SpriteHeight = 32;
+
+        var SpriteImage = new Image();   // Sprite sheet
+        SpriteImage.src = "pounce.png";
+
+        // Set up a timer to execute every 50 ms.
+        var myInterval;
+
+        function eraseSprite() {
+            // erase sprite
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawSprite() {
+            // draw sprite
+            //ctx.drawImage(SpriteImage, SpriteX, SpriteY);
+            ctx.drawImage(SpriteImage, SpriteCol * SpriteWidth, SpriteRow * SpriteHeight,
+                SpriteWidth, SpriteHeight, SpriteX, SpriteY, SpriteWidth, SpriteHeight);
+        }
+
+        function Tick() {
+            // Erase the sprite from its current location.
+            eraseSprite();
+
+            // Show a new image
+            drawSprite();
+        }
+
+        function loadComplete() {
+            console.log("Load is complete.");
+            canvas = document.getElementById("theCanvas");
+            ctx = canvas.getContext("2d");
+            myInterval = self.setInterval(function () {Tick()}, INTERVAL);
+        }
+
+        // What to do when the user presses a key.
+        function whenKeyPressed(key) {
+            switch (key) {
+                case "ArrowRight":  // Right arrow was pressed
+                    SpriteX += 10;
+                    if (SpriteX > 600)
+                        SpriteX = 600;
+
+                    break;
+                case "ArrowLeft":  // Left arrow was pressed
+                    SpriteX -= 10;
+                    if (SpriteX < 0)
+                        SpriteX = 1;
+
+                    break;
+
+                case "ArrowUp":  // Up arrow was pressed
+                    // Go up a row
+                    SpriteY -= 10;
+                    if (SpriteY < 0)
+                        SpriteY = 1;
+
+                    break;
+                case "ArrowDown":  // Down arrow was pressed
+                    SpriteY += 10;
+                    if (SpriteY > 445)
+                        SpriteY = 445;
+
+                    break;
+            }
+        }
+
+        // Handle key presses
+        document['onkeydown'] = function (event) {
+            event = event || window.event;
+            var key = event.key || event.cursor;
+            whenKeyPressed(key);
+        };
+    </script>
+
+</body>
+
+</html>

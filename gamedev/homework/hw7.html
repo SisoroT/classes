@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <title>Ryan's Animation</title>
+</head>
+
+<body onload="loadComplete()" bgcolor="#282a36" text="#ff79c6">
+    <center>
+        <canvas id="theCanvas" tabindex="1" width="640" height="480"></canvas>
+        <h2 id="p1_score">Player 1 Score: 0</h2>
+        <h2 id="p2_score">Player 2 Score: 0</h2>
+        <h2>Use left/right/up/down to move pounce (player 1)</h2>
+        <h2>Use WASD to move the koala (player 2)</h2>
+    </center>
+
+    <script type="application/javascript">
+        // canvas
+        var INTERVAL = 50;
+        var my_interval;
+        var DEBUG = false;
+        var canvas;
+        var WIDTH = 640;
+        var HEIGHT = 480;
+        var ctx;
+        var is_taken = false;
+        var speed = 10;
+
+        // player 1 position
+        var p1_row = 0;
+        var p1_col = 0;
+        var p1_max_sprite_row = 20;
+        var p1_max_sprite_col = 20;
+        var p1_x = 300;
+        var p1_y = 200;
+        var p1_width = 32;
+        var p1_height = 32;
+
+        // player 2 position
+        var p2_row = 0;
+        var p2_col = 0;
+        var p2_max_sprite_row = 20;
+        var p2_max_sprite_col = 20;
+        var p2_x = 400;
+        var p2_y = 300;
+        var p2_width = 32;
+        var p2_height = 32;
+
+        // balloons positions
+        var balloons_row = 0;
+        var balloons_col = 0;
+        var balloons_max_row = 20;
+        var balloons_max_col = 20;
+        var balloons_x = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var balloons_y = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var balloons_width = 32;
+        var balloons_height = 32;
+
+        // player's score
+        var p1_score = 0;
+        var p2_score = 0;
+
+        // images
+        var p1_image = new Image();
+        p1_image.src = "pounce.png";
+
+        var p2_image = new Image();
+        p2_image.src = "koala.png";
+
+        var ballons_image = new Image();
+        ballons_image.src = "balloons.png";
+
+        function resetCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+        }
+
+        function Tick() {
+            resetCanvas();
+            drawPlayerOne();
+            checkLineCollision();
+            drawPlayerTwo();
+            drawBalloons();
+        }
+
+        // sprite locations
+        function loadComplete() {
+            console.log("Load is complete.");
+            canvas = document.getElementById("theCanvas");
+            ctx = canvas.getContext("2d");
+            balloons_x = [Math.floor(Math.random() * 640) - 32,
+            Math.floor(Math.random() * 640) - 32,
+            Math.floor(Math.random() * 640) - 32,
+            Math.floor(Math.random() * 640) - 32,
+            Math.floor(Math.random() * 640) - 32,
+            Math.floor(Math.random() * 640) - 32,
+            Math.floor(Math.random() * 640) - 32,
+            Math.floor(Math.random() * 640) - 32,
+            Math.floor(Math.random() * 640) - 32];
+
+            balloons_y = [Math.floor(Math.random() * 480) - 32,
+            Math.floor(Math.random() * 480) - 32,
+            Math.floor(Math.random() * 480) - 32,
+            Math.floor(Math.random() * 480) - 32,
+            Math.floor(Math.random() * 480) - 32,
+            Math.floor(Math.random() * 480) - 32,
+            Math.floor(Math.random() * 480) - 32,
+            Math.floor(Math.random() * 480) - 32,
+            Math.floor(Math.random() * 480) - 32];
+
+            my_interval = self.setInterval(function () {Tick()}, INTERVAL);
+        }
+
+        // placing sprites
+        function copy() {
+            var img_data = ctx.getImageData(10, 10, 50, 50);
+            for (var i = 0; i < img_data.data.length; i += 4) {
+                img_data.data[i] = 255 - img_data.data[i];
+                img_data.data[i + 1] = 255 - img_data.data[i + 1];
+                img_data.data[i + 2] = 255 - img_data.data[i + 2];
+                img_data.data[i + 3] = 255;
+            }
+            ctx.putImageData(img_data, 10, 70);
+        }
+
+        function checkCollision() {
+            for (let i = 0; i < balloons_x.length; i++) {
+                if (
+                    ((p1_x >= balloons_x[i] && p1_x <= balloons_x[i] + 32) ||
+                        (p1_x + 32 >= balloons_x[i] && p1_x + 32 <= balloons_x[i] + 32)) &&
+                    ((p1_y >= balloons_y[i] && p1_y <= balloons_y[i] + 32) ||
+                        (p1_y + 32 >= balloons_y[i] && p1_y + 32 <= balloons_y[i] + 32))
+                ) {
+                    p1_score += 10;
+                    balloons_x.splice(i, 1);
+                    balloons_y.splice(i, 1);
+
+
+                }
+                if (
+                    ((p2_x >= balloons_x[i] && p2_x <= balloons_x[i] + 32) ||
+                        (p2_x + 32 >= balloons_x[i] && p2_x + 32 <= balloons_x[i] + 32)) &&
+                    ((p2_y >= balloons_y[i] && p2_y <= balloons_y[i] + 32) ||
+                        (p2_y + 32 >= balloons_y[i] && p2_y + 32 <= balloons_y[i] + 32))
+                ) {
+                    p2_score += 10;
+                    balloons_x.splice(i, 1);
+                    balloons_y.splice(i, 1);
+
+                }
+            }
+        }
+
+        function checkLineCollision() {
+            for (let i = 0; i < balloons_x.length; i++) {
+                if (
+                    ((p1_x >= balloons_x[i] && p1_x <= balloons_x[i] + 64) ||
+                        (p1_x + 64 >= balloons_x[i] && p1_x + 64 <= balloons_x[i] + 64)) &&
+                    ((p1_y >= balloons_y[i] && p1_y <= balloons_y[i] + 64) ||
+                        (p1_y + 64 >= balloons_y[i] && p1_y + 64 <= balloons_y[i] + 64))
+                ) {
+                    ctx.beginPath();
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "#8be9fd";
+                    ctx.moveTo(p1_x, p1_y);
+                    ctx.lineTo(balloons_x[i], balloons_y[i]);
+                    ctx.stroke();
+
+                    p1_score += 10;
+                    document.getElementById("p1_score").innerHTML =
+                        "Player 1 Score: " + p1_score;
+                    balloons_x.splice(i, 1);
+                    balloons_y.splice(i, 1);
+                }
+
+                if (
+                    ((p2_x >= balloons_x[i] && p2_x <= balloons_x[i] + 64) ||
+                        (p2_x + 64 >= balloons_x[i] && p2_x + 64 <= balloons_x[i] + 64)) &&
+                    ((p2_y >= balloons_y[i] && p2_y <= balloons_y[i] + 64) ||
+                        (p2_y + 64 >= balloons_y[i] && p2_y + 64 <= balloons_y[i] + 64))
+                ) {
+                    ctx.beginPath();
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "#8be9fd";
+                    ctx.moveTo(p2_x, p2_y);
+                    ctx.lineTo(balloons_x[i], balloons_y[i]);
+                    ctx.stroke();
+
+                    p2_score += 10;
+                    document.getElementById("p2_score").innerHTML =
+                        "Player 2 Score: " + p2_score;
+                    balloons_x.splice(i, 1);
+                    balloons_y.splice(i, 1);
+
+                }
+            }
+        }
+
+        // drawing first player
+        function drawPlayerOne() {
+            ctx.drawImage(p1_image, p1_col * p1_width, p1_row * p1_height,
+                p1_width, p1_height, p1_x, p1_y, p1_width, p1_height);
+        }
+
+        // drawing second player
+        function drawPlayerTwo() {
+            ctx.drawImage(p2_image, p2_col * p2_width, p2_row * p2_height,
+                p2_width, p2_height, p2_x, p2_y, p2_width, p2_height);
+        }
+
+        // drawing balloons
+        function drawBalloons() {
+            for (let i = 0; i < balloons_x.length; i++) {
+                ctx.drawImage(ballons_image, balloons_col * balloons_width, balloons_row * balloons_height,
+                    balloons_width, balloons_height, balloons_x[i], balloons_y[i], balloons_width, balloons_height);
+            }
+        }
+
+        // what to do when the user presses a key.
+        function whenKeyPressed(key) {
+            switch (key) {
+                case "ArrowRight":  // right arrow was pressed
+                    p1_x += speed;
+                    if (p1_x > 600)
+                        p1_x = 600;
+                    break;
+                case "ArrowLeft":  // left arrow was pressed
+                    p1_x -= speed;
+                    if (p1_x < 0)
+                        p1_x = 1;
+                    break;
+                case "ArrowUp":  // up arrow was pressed
+                    p1_y -= speed;
+                    if (p1_y < 0)
+                        p1_y = 1;
+                    break;
+                case "ArrowDown":  // down arrow was pressed
+                    p1_y += speed;
+                    if (p1_y > 445)
+                        p1_y = 445;
+                    break;
+                case "a": // a left
+                    p2_x -= speed;
+                    if (p2_x < 0)
+                        p2_x = 1;
+                    break;
+                case "w": // w up
+                    p2_y -= speed;
+                    if (p2_y < 0)
+                        p2_y = 1;
+                    break;
+                case "d": // d right
+                    p2_x += speed;
+                    if (p2_x > 600)
+                        p2_x = 600;
+                    break;
+                case "s": // s down
+                    p2_y += speed;
+                    if (p2_y > 445)
+                        p2_y = 445;
+                    break;
+            }
+            checkCollision();
+        }
+
+        // handle key presses
+        document['onkeydown'] = function (event) {
+            event = event || window.event;
+            var key = event.key || event.cursor;
+            whenKeyPressed(key);
+        };
+    </script>
+</body>
+
+</html>

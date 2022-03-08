@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <title>Ryan's Sound Example</title>
+</head>
+
+<body onload="showEverything()" bgcolor="#282a36" text="#f8f8f2">
+    <script type="application/javascript">
+        var DEBUG = false; //true;
+        var id;
+        var theCanvas;
+        var theContext;
+        var MAXWIDTH = 640;   // pixels across
+        var MAXHEIGHT = 480;  // pixels from top to bottom
+        var i = 0;
+        var sound1;
+        var sound2;
+        var sound3;
+        var sound4;
+        var sound_to_play = 1;  // Which sound played.
+        var count = 0;
+        var check = 0;
+        var point = 0;
+        const playlist = [];
+        var a = 1;
+
+        // centerX and centerY are used to draw rectangles on the canvas.
+        // Later, we use these values to determine which rectangle the user
+        // clicks on.
+        var center_x = Math.floor(MAXWIDTH / 2);
+        var center_y = Math.floor(MAXHEIGHT / 2);
+
+        var mouse_x = 0;          // X and Y mouse coords,
+        var mouse_y = 0;          // according to its last move event.
+        var x_offset = 0;         // MouseX,Y values are not correct. This corrects X.
+        var y_offset = 0;         // MouseX,Y values are not correct. This corrects Y.
+        var last_x = 0;           // X where mouse down event was
+        var last_y = 0;           // Y where mouse down event was
+        var button_pressed = false;   // Is user pressing the mouse button right now?
+
+        // Erase the entire canvas.
+        function erase_canvas() {
+            theContext.clearRect(0, 0, MAXWIDTH, MAXHEIGHT);
+            draw();
+        }
+
+        // As the "onload" function, this ensures the maze is shown.
+        function showEverything() {
+
+            theCanvas = document.getElementById("theCanvas");
+            theContext = theCanvas.getContext("2d");
+
+            sound1 = document.getElementById('audio1');
+            sound2 = document.getElementById('audio2');
+            sound3 = document.getElementById('audio3');
+            sound4 = document.getElementById('audio4');
+
+            setUpListeners();   // Map mouse move and buttons to my functions.
+            calibrate();        // Find correct X,Y offsets for mouse.
+            document.getElementById("theCanvas").focus();
+
+            draw();
+
+            document.getElementById("theCanvas").focus();
+        }
+
+        // Change the background screen color to red.
+        function red() {
+            document.bgColor = "#ff5555";
+        }
+
+        // Change the background screen color to green.
+        function green() {
+            document.bgColor = "#50fa7b";
+        }
+
+        // Change the background screen color to purple.
+        function purple() {
+            document.bgColor = "#bd93f9";
+        }
+
+        // Change the background screen color to cyan.
+        function cyan() {
+            document.bgColor = "#8be9fd";
+        }
+
+        // Change the background screen color to the bg color.
+        function bg() {
+            document.bgColor = "#282a36";
+        }
+
+
+        // Calculate the x_offset and y_offset.
+        // (This seems to change as the window loads.)
+        function calibrate() {
+            // get canvas position
+            var obj = theCanvas;
+            var top = 0;
+            var left = 0;
+            // Go through the page to find where the canvas is.
+            // Later, we find the cursor's position, but it will be
+            // from the top left corner of the page. Thus, we can subtract
+            // this offset later.
+            // (Loop code by html5canvastutorials.com)
+            while (obj && obj.tagName != 'BODY') {
+                top += obj.offsetTop;
+                left += obj.offsetLeft;
+                obj = obj.offsetParent;
+            }
+            x_offset = -left + window.pageXOffset;
+            y_offset = -top + window.pageYOffset;
+        }
+
+
+        // User let up on the mouse button
+        function mouseUpEvent() {
+            button_pressed = false;
+        }
+
+
+        // User pressed the mouse button down.
+        function mouseDownEvent() {
+
+            last_x = mouse_x;
+            last_y = mouse_y;
+            button_pressed = true;
+
+            if (DEBUG)
+                console.log(" Mouse down at " + mouse_x + ", " + mouse_y);
+
+            // Assign color according to the rectangle.
+            if ((mouse_x > 0) && (mouse_x < center_x) &&
+                (mouse_y > 0) && (mouse_y < center_y)) {
+                red();
+                sound_to_play = 0;
+                sound1.play();
+                if (playlist[check] == sound_to_play) {
+                    count++;
+                    check++;
+                }
+            } else if ((mouse_x > 0) && (mouse_x < center_x) &&
+                (mouse_y > center_y) && (mouse_y < MAXHEIGHT)) {
+                purple();
+                sound_to_play = 1;
+                sound2.play();
+                if (playlist[check] == sound_to_play) {
+                    count++;
+                    check++;
+                }
+
+            } else if ((mouse_x >= center_x) && (mouse_x < MAXWIDTH) &&
+                (mouse_y > 0) && (mouse_y < center_y)) {
+                green();
+                sound_to_play = 2;
+                sound3.play();
+                if (playlist[check] == sound_to_play) {
+                    count++;
+                    check++;
+                }
+
+            } else if ((mouse_x >= center_x) && (mouse_x < MAXWIDTH) &&
+                (mouse_y >= center_y) && (mouse_y < MAXHEIGHT)) {
+                cyan();
+                sound_to_play = 3;
+                sound4.play();
+                if (playlist[check] == sound_to_play) {
+                    count++;
+                    check++;
+                }
+
+            } else {
+                bg();
+            }
+            if ((mouse_x >= 0) && (mouse_x < MAXWIDTH) && (mouse_y >= 0) && (mouse_y < MAXHEIGHT)) {
+                point++;
+            }
+            if (count != point) {
+                theContext.font = "30px Arial";
+                theContext.fillText("You Lose!", 10, 35);
+
+                setTimeout(function () {erase_canvas();}, 1000);
+                point = 0;
+                count = 0;
+                check = 0;
+            }
+            else if (count == 4) {
+                theContext.font = "30px Arial";
+                theContext.fillText("You Win!", 10, 35);
+                setTimeout(function () {erase_canvas();}, 1000);
+                point = 0;
+                check = 0;
+                count = 0;
+
+            }
+
+        }
+
+        // Set up event listeners for the mouse.
+        function setUpListeners() {
+
+            document.addEventListener('mousemove', function (evt) {
+                var d = new Date();
+                var t = d.toLocaleTimeString();
+
+                // Find the relative mouse position.
+                mouse_x = evt.clientX + x_offset;
+                mouse_y = evt.clientY + y_offset;
+
+            }, false);
+
+            document.addEventListener('mousedown', mouseDownEvent, false);
+            document.addEventListener('mouseup', mouseUpEvent, false);
+        };
+
+
+        var sound2play = 0;
+        function PlayNext() {
+            // see Math.random();
+            sound2play = Math.floor(Math.random() * 4);
+            playlist[i] = sound2play;
+            i++
+            switch (sound2play) {
+                case 0:
+                    // play sound 1
+                    sound1.play();
+                    break;
+                case 1:
+                    // play sound 2
+                    sound2.play();
+                    break;
+                case 2:
+                    // play sound 3
+                    sound3.play();
+                    break;
+                case 3:
+                    // play sound 4
+                    sound4.play();
+                    break;
+                default:
+                    clearInterval(myInterval);
+                    break;
+            }
+            if (i == 4) {
+                // turn off the Interval
+                clearInterval(myInterval);
+                i = 0;
+            }
+
+        }
+        var myInterval;
+        function startButton() {
+            sound2play = 0;
+            myInterval = self.setInterval(function () {PlayNext()}, 1000);
+        }
+        function draw() {
+            // Draw a red rectangle
+            theContext.fillStyle = "#ff5555";
+            theContext.fillRect(0, 0, center_x, center_y);
+            // Draw a green rectangle
+            theContext.fillStyle = "#50fa7b";
+            theContext.fillRect(center_x, 0, MAXWIDTH, center_y);
+            // Draw a purple rectangle
+            theContext.fillStyle = "#bd93f9";
+            theContext.fillRect(0, center_y, center_x, MAXHEIGHT);
+            // Draw a cyan rectangle
+            theContext.fillStyle = "#8be9fd";
+            theContext.fillRect(center_x, center_y, MAXWIDTH, MAXHEIGHT);
+        }
+
+    </script>
+
+    <center>
+        <h1>Sound Example</h1>
+        <br>
+        <!-- <canvas id="theCanvas" tabindex="1" width="320" height="240"></canvas> -->
+        <script type="application/javascript">
+            document.write('<canvas id="theCanvas" tabindex="1" width="'
+                + MAXWIDTH + '" height="' + MAXHEIGHT + '"></canvas>');
+        </script>
+
+        <font face="monospace" color="white">
+            <p id="status"></p>
+        </font>
+
+        <button type="button" onclick="startButton();" />Start</button>
+
+        <br>
+        <br>
+        <audio id="audio1" src="grain_bag.ogg" preload="auto">
+        </audio>
+        <audio id="audio2" src="napkin_rustling.ogg" preload="auto">
+        </audio>
+        <audio id="audio3" src="toothpicks.ogg" preload="auto">
+        </audio>
+        <audio id="audio4" src="glass_rubbing.ogg" preload="auto">
+        </audio>
+    </center>
+
+</body>
+
+</html>
