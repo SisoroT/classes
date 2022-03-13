@@ -9,7 +9,7 @@ public class GuessMyNumber {
         int guess = (low + high) / 2;
 
         // ask user for range of numbers
-        System.out.print("Enter n: ");
+        System.out.print("Enter a number: ");
         int n = scanner.nextInt();
         // asks user for positive integer if 0 or a negative is entered
         while (n < 1) {

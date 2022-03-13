@@ -2,7 +2,7 @@ import java.util.*;
 
 public class ArraytoInt {
     public static void main(String[] args) {
-        String year = "dataset";
+        String year = "";
         int[] arr = { 1, 9, 8, 9 };
         // add each number in arr one by one as a string to the empty string year
         for (int i : arr) {
