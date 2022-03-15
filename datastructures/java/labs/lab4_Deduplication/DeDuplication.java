@@ -62,7 +62,7 @@ public class DeDuplication {
 
         // have the user enter all the elements for the array
         for (int i = 0; i < length; i++) {
-            System.out.println("Enter element " + i + " or your array. ");
+            System.out.println("Enter element " + i + " for your array. ");
             arr[i] = scanner.nextInt();
         }
 

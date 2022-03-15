@@ -1,66 +1,40 @@
-import java.util.*;
+def make_array() -> list[int]:
+    # user decides how long they want the array
+    length = int(input("How long would you like to make your array? "))
 
-public class DeDuplicationOptimized {
+    # if user enters a non positive number, prompt them to enter a positive
+    while length <= 0:
+        length = int(input("Please enter a positive number. "))
 
-    public static void main(String[] args) {
+    arr = []
+    # have the user enter all the elements for the array
+    for i in range(length):
+        arr.append(int(input(f"Enter element {i+1} for your array. ")))
 
-        // int arr[] = { 11, 21, 21, 33, 40, 40, 40, 50, 50 };
-        // user creates an array
-        int arr[] = makeArray();
+    return arr
 
-        int lastUniqueIndex = removeDuplicatesOptimized(arr, arr.length);
 
-        // print the array up until the index of the last unique element
-        for (int i = 0; i < lastUniqueIndex; i++)
-            System.out.print(arr[i] + " ");
-    }
+def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
+    # if array has a length of 0 or 1 then it is sorted already
+    if list_length == 0 or list_length == 1:
+        return list_length
+    uniques = 0
 
-    public static int removeDuplicatesOptimized(int[] arr, int n) {
-        // if array has a length of 0 or 1 then it is sorted already
-        if (n == 0 || n == 1) {
-            return n;
-        }
+    # if i!=i+1 then it is unique so place i
+    # at the next unique index of the array
+    for i in range(list_length - 1):
+        if arr[i] != arr[i + 1]:
+            arr[uniques] = arr[i]
+            uniques += 1
 
-        int uniques = 0;
+    # add last unique number and increment counter
+    arr[uniques] = arr[-1]
+    uniques += 1
 
-        // if i!=i+1 then it is unique so place i at the next unique index of the array
-        for (int i = 0; i < n - 1; i++) {
-            if (arr[i] != arr[i + 1]) {
-                arr[uniques++] = arr[i];
-            }
-        }
+    return uniques
 
-        // add the last unique number
-        arr[uniques++] = arr[n - 1];
 
-        return uniques;
-    }
-
-    public static int[] makeArray() {
-        Scanner scanner = new Scanner(System.in);
-
-        // user decides how long they want the array
-        System.out.print("How long would you like to make your array? ");
-        int length = scanner.nextInt();
-
-        // if user enters a non positive number, prompt them to enter a positive
-        while (length <= 0) {
-            System.out.println("Please enter a positive number. ");
-            length = scanner.nextInt();
-        }
-
-        // create a new array at the length specified by the user
-        int[] arr = new int[length];
-
-        // have the user enter all the elements for the array
-        for (int i = 0; i < length; i++) {
-            System.out.println("Enter element " + i + " or your array. ");
-            arr[i] = scanner.nextInt();
-        }
-
-        // close the scanner and return the array
-        scanner.close();
-        return arr;
-    }
-
-}
+if __name__ == "__main__":
+    arr = make_array()
+    last_unique_index = remove_duplicates_optimized(arr, len(arr))
+    print(arr[:last_unique_index])
