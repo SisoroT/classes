@@ -32,3 +32,21 @@ def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
     uniques += 1
 
     return uniques
+
+
+if __name__ == "__main__":
+    print("Array 1:")
+    arr1 = make_array()
+    print("Array 2:")
+    arr2 = make_array()
+    common_array = []
+
+    arr1_uniques = remove_duplicates_optimized(arr1, len(arr1))
+    arr2_uniques = remove_duplicates_optimized(arr2, len(arr2))
+
+    for i in arr1[:arr1_uniques]:
+        for j in arr2[:arr2_uniques]:
+            if i == j:
+                common_array.append(i)
+
+    print(f"The common elements are {common_array}")

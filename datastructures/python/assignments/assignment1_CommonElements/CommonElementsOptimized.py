@@ -14,21 +14,35 @@ def make_array() -> list[int]:
     return arr
 
 
-def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
-    # if array has a length of 0 or 1 then it is sorted already
-    if list_length == 0 or list_length == 1:
-        return list_length
-    uniques = 0
+def binary_search_recursive(arr: list[int], low: int, high: int, target: int):
+    mid = (low + high) // 2
+    if low <= high:
+        if arr[mid] == target:
+            return mid
+        if arr[mid] < target:
+            return binary_search_recursive(arr, mid + 1, high, target)
+        if arr[mid] > target:
+            return binary_search_recursive(arr, low, mid - 1, target)
+    return -1
 
-    # if i!=i+1 then it is unique so place i
-    # at the next unique index of the array
-    for i in range(list_length - 1):
-        if arr[i] != arr[i + 1]:
-            arr[uniques] = arr[i]
-            uniques += 1
 
-    # add last unique number and increment counter
-    arr[uniques] = arr[-1]
-    uniques += 1
+if __name__ == "__main__":
+    print("Array 1:")
+    arr1 = make_array()
+    print("Array 2:")
+    arr2 = make_array()
 
-    return uniques
+    common_array = []
+
+    for i in range(len(arr1)):
+        # if i is not the last element and it
+        # is equal to i+1 then skip that number
+        if i < len(arr1) - 1 and arr1[i] == arr1[i + 1]:
+            continue
+        # binary search for the current element in the second array
+        found = binary_search_recursive(arr2, 0, len(arr2), arr1[i])
+        # if the number exists in the second array, add it to the common_array
+        if found != -1:
+            common_array.append(arr1[i])
+
+    print(f"The common elements are {common_array}")
