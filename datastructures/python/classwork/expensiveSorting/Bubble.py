@@ -1,24 +1,15 @@
-import java.util.*;
+def bubble_sort(arr):
+    arr_len = len(arr)
 
-public class Bubble {
-    public static void main(String[] args) {
-        int[] arr = { 8, 3, 4, 1, 2 };
-        bubbleSort(arr);
-        System.out.println(Arrays.toString(arr));
-    }
+    # traverse through all array elements
+    for i in range(arr_len - 1):
+        for j in range(0, arr_len - i - 1):
+            # swap if the element found is greater than the next element
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
 
-    public static void bubbleSort(int arr[]) {
-        int temp;
 
-        for (int i = 0; i < arr.length - 1; i++) {
-            for (int j = 0; j < arr.length - i - 1; j++) {
-                // if j > j+1 swap them
-                if (arr[j] > arr[j + 1]) {
-                    temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
-            }
-        }
-    }
-}
+if __name__ == "__main__":
+    arr = [8, 3, 4, 1, 2]
+    bubble_sort(arr)
+    print(arr)

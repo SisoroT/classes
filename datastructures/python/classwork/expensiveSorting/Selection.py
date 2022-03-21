@@ -1,26 +1,18 @@
-import java.util.*;
+def selection_sort(arr):
+    for i in range(len(arr)):
+        min_loc = i
 
-public class Selection {
-    public static void main(String[] args) {
-        int[] arr = { 8, 3, 4, 1, 2 };
-        selectionSort(arr);
-        System.out.println(Arrays.toString(arr));
-    }
+        # find the minimum element in remaining unsorted array
+        for j in range(i + 1, len(arr)):
+            if arr[min_loc] > arr[j]:
+                min_loc = j
 
-    public static void selectionSort(int arr[]) {
-        int temp;
+        # swap the found minimum element with the
+        # first element of the unsorted array
+        arr[i], arr[min_loc] = arr[min_loc], arr[i]
 
-        for (int i = 0; i < arr.length - 1; i++) {
-            int minLocation = i;
-            for (int j = i + 1; j < arr.length; j++) {
-                if (arr[j] < arr[minLocation])
-                    minLocation = j;
-            }
 
-            // put i in the correct location
-            temp = arr[i];
-            arr[i] = arr[minLocation];
-            arr[minLocation] = temp;
-        }
-    }
-}
+if __name__ == "__main__":
+    arr = [8, 3, 4, 1, 2]
+    selection_sort(arr)
+    print(arr)
