@@ -14,17 +14,6 @@ def make_array() -> list[int]:
     return arr
 
 
-def bubble_sort(arr):
-    arr_len = len(arr)
-
-    # traverse through all array elements
-    for i in range(arr_len - 1):
-        for j in range(0, arr_len - i - 1):
-            # swap if the element found is greater than the next element
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-
-
 def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
     # if array has a length of 0 or 1 then it is sorted already
     if list_length == 0 or list_length == 1:
@@ -43,6 +32,17 @@ def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
     uniques += 1
 
     return uniques
+
+
+def bubble_sort(arr):
+    arr_len = len(arr)
+
+    # traverse through all array elements
+    for i in range(arr_len - 1):
+        for j in range(0, arr_len - i - 1):
+            # swap if the element found is greater than the next element
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
 
 
 if __name__ == "__main__":

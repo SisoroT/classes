@@ -14,20 +14,6 @@ def make_array() -> list[int]:
     return arr
 
 
-def selection_sort(arr):
-    for i in range(len(arr)):
-        min_loc = i
-
-        # find the minimum element in remaining unsorted array
-        for j in range(i + 1, len(arr)):
-            if arr[min_loc] > arr[j]:
-                min_loc = j
-
-        # swap the found minimum element with the
-        # first element of the unsorted array
-        arr[i], arr[min_loc] = arr[min_loc], arr[i]
-
-
 def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
     # if array has a length of 0 or 1 then it is sorted already
     if list_length == 0 or list_length == 1:
@@ -46,6 +32,20 @@ def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
     uniques += 1
 
     return uniques
+
+
+def selection_sort(arr):
+    for i in range(len(arr)):
+        min_loc = i
+
+        # find the minimum element in remaining unsorted array
+        for j in range(i + 1, len(arr)):
+            if arr[min_loc] > arr[j]:
+                min_loc = j
+
+        # swap the found minimum element with the
+        # first element of the unsorted array
+        arr[i], arr[min_loc] = arr[min_loc], arr[i]
 
 
 if __name__ == "__main__":
