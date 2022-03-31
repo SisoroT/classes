@@ -1,102 +1,71 @@
-import java.util.*;
+def make_array() -> list[int]:
+    # user decides how long they want the array
+    length = int(input("How long would you like to make your array? "))
 
-public class QuickDeDuplication {
-    public static void main(String[] args) {
-        // have the user create an array
-        int[] arr = makeArray();
-        // int[] arr = { 50, 11, 33, 21, 40, 50, 40, 40, 21 };
+    # if user enters a non positive number, prompt them to enter a positive
+    while length <= 0:
+        length = int(input("Please enter a positive number. "))
 
-        // sort the array
-        quickSort(arr, 0, arr.length - 1);
+    arr = []
+    # have the user enter all the elements for the array
+    for i in range(length):
+        arr.append(int(input(f"Enter element {i+1} for your array. ")))
 
-        // lastUniqueIndex = the index of the last unique value
-        int lastUniqueIndex = removeDuplicatesOptimized(arr, arr.length);
+    return arr
 
-        // print the array up until the index of the last unique value
-        for (int i = 0; i < lastUniqueIndex; i++)
-            System.out.print(arr[i] + " ");
-    }
 
-    public static void quickSort(int arr[], int first, int last) {
-        if (first < last) {
-            // partIndex is now at right place
-            int partIndex = partition(arr, first, last);
+def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
+    # if array has a length of 0 or 1 then it is sorted already
+    if list_length == 0 or list_length == 1:
+        return list_length
+    uniques = 0
 
-            // Separately sort elements before and after partition
-            quickSort(arr, first, partIndex - 1);
-            quickSort(arr, partIndex + 1, last);
-        }
-    }
+    # if i!=i+1 then it is unique so place i
+    # at the next unique index of the array
+    for i in range(list_length - 1):
+        if arr[i] != arr[i + 1]:
+            arr[uniques] = arr[i]
+            uniques += 1
 
-    public static int partition(int[] arr, int first, int last) {
-        int pivot = arr[last];
-        int i = (first - 1);
+    # add last unique number and increment counter
+    arr[uniques] = arr[-1]
+    uniques += 1
 
-        for (int j = first; j < last; j++) {
-            // if current element is less than the
-            // pivot, increment i and swap i and j
-            if (arr[j] <= pivot) {
-                i++;
-                swap(arr, i, j);
-            }
-        }
+    return uniques
 
-        // place pivot in correct place and return its index
-        swap(arr, i + 1, last);
-        return i + 1;
-    }
 
-    public static void swap(int[] arr, int a, int b) {
-        int temp = arr[a];
-        arr[a] = arr[b];
-        arr[b] = temp;
-    }
+def partition(arr: list[int], first: int, last: int) -> int:
+    pivot = arr[last]  # pivot
+    i = first - 1  # index of smaller element
 
-    public static int removeDuplicatesOptimized(int[] arr, int n) {
-        // if array has a length of 0 or 1 then it has no duplicates --test case
-        if (n == 0 || n == 1) {
-            return n;
-        }
+    for j in range(first, last):
+        # if current element is less than or equal
+        # to pivot, increment i and swap i and j
+        if arr[j] <= pivot:
+            i = i + 1
+            arr[i], arr[j] = arr[j], arr[i]
 
-        int uniques = 0;
+    # place pivot in correct place and return its index
+    arr[i + 1], arr[last] = arr[last], arr[i + 1]
+    return i + 1
 
-        // if i!=i+1 then it is unique so place i at the next unique index of the array
-        for (int i = 0; i < n - 1; i++) {
-            if (arr[i] != arr[i + 1]) {
-                arr[uniques++] = arr[i];
-            }
-        }
 
-        // add the last unique number
-        arr[uniques++] = arr[n - 1];
+def quick_sort(arr: list[int], first: int, last: int):
+    if len(arr) == 1:
+        return arr
+    if first < last:
+        # pi is partitioning index, arr[p] is now
+        # at right place
+        part_index = partition(arr, first, last)
 
-        return uniques;
-    }
+        # separately sort elements before and after partition
+        quick_sort(arr, first, part_index - 1)
+        quick_sort(arr, part_index + 1, last)
 
-    public static int[] makeArray() {
-        Scanner scanner = new Scanner(System.in);
 
-        // user decides how long they want the array
-        System.out.print("How long would you like to make your array? ");
-        int length = scanner.nextInt();
-
-        // if user enters a non positive number, prompt them to enter a positive
-        while (length <= 0) {
-            System.out.println("Please enter a positive number. ");
-            length = scanner.nextInt();
-        }
-
-        // create a new array at the length specified by the user
-        int[] arr = new int[length];
-
-        // have the user enter all the elements for the array
-        for (int i = 0; i < length; i++) {
-            System.out.println("Enter element " + i + " or your array. ");
-            arr[i] = scanner.nextInt();
-        }
-
-        // close the scanner and return the array
-        scanner.close();
-        return arr;
-    }
-}
+if __name__ == "__main__":
+    # arr = make_array()
+    arr = [50, 11, 33, 21, 40, 50, 40, 40, 21]
+    quick_sort(arr, 0, len(arr) - 1)
+    last_unique_index = remove_duplicates_optimized(arr, len(arr))
+    print(arr[:last_unique_index])

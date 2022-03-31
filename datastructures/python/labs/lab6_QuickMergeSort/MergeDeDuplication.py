@@ -1,111 +1,96 @@
-import java.util.*;
+def make_array() -> list[int]:
+    # user decides how long they want the array
+    length = int(input("How long would you like to make your array? "))
 
-public class MergeDeDuplication {
-    public static void main(String[] args) {
-        // have the user create an array
-        int[] arr = makeArray();
-        // int[] arr = { 50, 11, 33, 21, 40, 50, 40, 40, 21 };
+    # if user enters a non positive number, prompt them to enter a positive
+    while length <= 0:
+        length = int(input("Please enter a positive number. "))
 
-        // sort the array
-        mergeSort(arr, arr.length);
+    arr = []
+    # have the user enter all the elements for the array
+    for i in range(length):
+        arr.append(int(input(f"Enter element {i+1} for your array. ")))
 
-        // lastUniqueIndex = the index of the last unique value
-        int lastUniqueIndex = removeDuplicatesOptimized(arr, arr.length);
+    return arr
 
-        // print the array up until the index of the last unique value
-        for (int i = 0; i < lastUniqueIndex; i++)
-            System.out.print(arr[i] + " ");
-    }
 
-    public static void mergeSort(int[] arr, int n) {
-        // if the arrays length is less
-        // than 2 it is already sorted
-        if (n < 2) {
-            return;
-        }
-        int mid = n / 2;
-        // create new arrays for both halves of the array
-        int[] left = new int[mid];
-        int[] right = new int[n - mid];
+def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
+    # if array has a length of 0 or 1 then it is sorted already
+    if list_length == 0 or list_length == 1:
+        return list_length
+    uniques = 0
 
-        // fill left and right arrays
-        for (int i = 0; i < mid; i++) {
-            left[i] = arr[i];
-        }
-        for (int i = mid; i < n; i++) {
-            right[i - mid] = arr[i];
-        }
+    # if i!=i+1 then it is unique so place i
+    # at the next unique index of the array
+    for i in range(list_length - 1):
+        if arr[i] != arr[i + 1]:
+            arr[uniques] = arr[i]
+            uniques += 1
 
-        // continue until base case is reached
-        mergeSort(left, mid);
-        mergeSort(right, n - mid);
+    # add last unique number and increment counter
+    arr[uniques] = arr[-1]
+    uniques += 1
 
-        sort(arr, left, right, mid, n - mid);
-    }
+    return uniques
 
-    public static void sort(int[] arr, int[] l, int[] r, int left, int right) {
 
-        int i = 0, j = 0, k = 0;
-        while (i < left && j < right) {
-            if (l[i] <= r[j]) {
-                arr[k++] = l[i++];
-            } else {
-                arr[k++] = r[j++];
-            }
-        }
-        while (i < left) {
-            arr[k++] = l[i++];
-        }
-        while (j < right) {
-            arr[k++] = r[j++];
-        }
-    }
+def merge(arr: list[int], first: int, mid: int, last: int):
+    size_of_left = mid - first + 1
+    size_of_right = last - mid
 
-    public static int removeDuplicatesOptimized(int[] arr, int n) {
-        // if array has a length of 0 or 1 then it has no duplicates --test case
-        if (n == 0 || n == 1) {
-            return n;
-        }
+    # create temp arrays
+    left_arr = [0] * (size_of_left)
+    right_arr = [0] * (size_of_right)
 
-        int uniques = 0;
+    # copy data to temp arrays left[] and right[]
+    for i in range(size_of_left):
+        left_arr[i] = arr[first + i]
+    for i in range(size_of_right):
+        right_arr[i] = arr[mid + 1 + i]
 
-        // if i!=i+1 then it is unique so place i at the next unique index of the array
-        for (int i = 0; i < n - 1; i++) {
-            if (arr[i] != arr[i + 1]) {
-                arr[uniques++] = arr[i];
-            }
-        }
+    left_idx = 0  # initial index of first subarray
+    right_idx = 0  # initial index of second subarray
+    merged_idx = first  # initial index of merged subarray
 
-        // add the last unique number
-        arr[uniques++] = arr[n - 1];
+    # merge the temp arrays back into arr[first..last]
+    while left_idx < size_of_left and right_idx < size_of_right:
+        if left_arr[left_idx] <= right_arr[right_idx]:
+            arr[merged_idx] = left_arr[left_idx]
+            left_idx += 1
+        else:
+            arr[merged_idx] = right_arr[right_idx]
+            right_idx += 1
+        merged_idx += 1
 
-        return uniques;
-    }
+    # copy the remaining elements of left[], if there are any
+    while left_idx < size_of_left:
+        arr[merged_idx] = left_arr[left_idx]
+        left_idx += 1
+        merged_idx += 1
 
-    public static int[] makeArray() {
-        Scanner scanner = new Scanner(System.in);
+    # copy the remaining elements of right[], if there are any
+    while right_idx < size_of_right:
+        arr[merged_idx] = right_arr[right_idx]
+        right_idx += 1
+        merged_idx += 1
 
-        // user decides how long they want the array
-        System.out.print("How long would you like to make your array? ");
-        int length = scanner.nextInt();
 
-        // if user enters a non positive number, prompt them to enter a positive
-        while (length <= 0) {
-            System.out.println("Please enter a positive number. ");
-            length = scanner.nextInt();
-        }
+# first is first index and last is last
+# index of the sub-array of arr to be sorted
+def merge_sort(arr: list[int], first: int, last: int):
+    if first < last:
+        # same as (first+last)//2, but avoids overflow for large l and h
+        mid = first + (last - first) // 2
 
-        // create a new array at the length specified by the user
-        int[] arr = new int[length];
+        # sort first and second halves
+        merge_sort(arr, first, mid)
+        merge_sort(arr, mid + 1, last)
+        merge(arr, first, mid, last)
 
-        // have the user enter all the elements for the array
-        for (int i = 0; i < length; i++) {
-            System.out.println("Enter element " + i + " or your array. ");
-            arr[i] = scanner.nextInt();
-        }
 
-        // close the scanner and return the array
-        scanner.close();
-        return arr;
-    }
-}
+if __name__ == "__main__":
+    # arr = make_array()
+    arr = [50, 11, 33, 21, 40, 50, 40, 40, 21]
+    merge_sort(arr, 0, len(arr) - 1)
+    last_unique_index = remove_duplicates_optimized(arr, len(arr))
+    print(arr[:last_unique_index])
