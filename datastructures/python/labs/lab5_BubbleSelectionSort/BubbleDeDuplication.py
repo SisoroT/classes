@@ -1,88 +1,52 @@
-import java.util.*;
+def make_array() -> list[int]:
+    # user decides how long they want the array
+    length = int(input("How long would you like to make your array? "))
 
-public class BubbleDeDuplication {
-    public static void main(String[] args) {
-        // have the user create an array
-        int[] arr = makeArray();
+    # if user enters a non positive number, prompt them to enter a positive
+    while length <= 0:
+        length = int(input("Please enter a positive number. "))
 
-        // sort the array
-        bubbleSort(arr);
+    arr = []
+    # have the user enter all the elements for the array
+    for i in range(length):
+        arr.append(int(input(f"Enter element {i+1} for your array. ")))
 
-        // lastUniqueIndex = the index of the last unique value
-        int lastUniqueIndex = removeDuplicatesOptimized(arr, arr.length);
+    return arr
 
-        // print the array up until the index of the last unique value
-        for (int i = 0; i < lastUniqueIndex; i++)
-            System.out.print(arr[i] + " ");
-    }
 
-    public static void bubbleSort(int arr[]) {
-        int temp;
+def bubble_sort(arr):
+    arr_len = len(arr)
 
-        // if the array length is 1 there is no need to sort --test case
-        if (arr.length == 1) {
-            System.out.println("This array is already sorted.");
-        } else {
+    # traverse through all array elements
+    for i in range(arr_len - 1):
+        for j in range(0, arr_len - i - 1):
+            # swap if the element found is greater than the next element
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
 
-            for (int i = 0; i < arr.length - 1; i++) {
-                for (int j = 0; j < arr.length - i - 1; j++) {
-                    // if j > j+1 swap them
-                    if (arr[j] > arr[j + 1]) {
-                        temp = arr[j];
-                        arr[j] = arr[j + 1];
-                        arr[j + 1] = temp;
-                    }
-                }
-            }
 
-        }
-    }
+def remove_duplicates_optimized(arr: list[int], list_length: int) -> int:
+    # if array has a length of 0 or 1 then it is sorted already
+    if list_length == 0 or list_length == 1:
+        return list_length
+    uniques = 0
 
-    public static int removeDuplicatesOptimized(int[] arr, int n) {
-        // if array has a length of 0 or 1 then it has no duplicates --test case
-        if (n == 0 || n == 1) {
-            return n;
-        }
+    # if i!=i+1 then it is unique so place i
+    # at the next unique index of the array
+    for i in range(list_length - 1):
+        if arr[i] != arr[i + 1]:
+            arr[uniques] = arr[i]
+            uniques += 1
 
-        int uniques = 0;
+    # add last unique number and increment counter
+    arr[uniques] = arr[-1]
+    uniques += 1
 
-        // if i!=i+1 then it is unique so place i at the next unique index of the array
-        for (int i = 0; i < n - 1; i++) {
-            if (arr[i] != arr[i + 1]) {
-                arr[uniques++] = arr[i];
-            }
-        }
+    return uniques
 
-        // add the last unique number
-        arr[uniques++] = arr[n - 1];
 
-        return uniques;
-    }
-
-    public static int[] makeArray() {
-        Scanner scanner = new Scanner(System.in);
-
-        // user decides how long they want the array
-        System.out.print("How long would you like to make your array? ");
-        int length = scanner.nextInt();
-
-        // if user enters a non positive number, prompt them to enter a positive
-        while (length <= 0) {
-            System.out.println("Please enter a positive number. ");
-            length = scanner.nextInt();
-        }
-
-        // create a new array at the length specified by the user
-        int[] arr = new int[length];
-
-        // have the user enter all the elements for the array
-        for (int i = 0; i < length; i++) {
-            System.out.println("Enter element " + i + " or your array. ");
-            arr[i] = scanner.nextInt();
-        }
-
-        // close the scanner and return the array
-        scanner.close();
-        return arr;
-    }
-}
+if __name__ == "__main__":
+    arr = make_array()
+    bubble_sort(arr)
+    last_unique_index = remove_duplicates_optimized(arr, len(arr))
+    print(arr[:last_unique_index])
