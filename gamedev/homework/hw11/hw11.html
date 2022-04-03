@@ -3,16 +3,9 @@
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-    <title>Movement with enemies</title>
-
-    <!--
-drawImage example
-
--Michael Weeks, April 2021
--->
+    <title>Ryan's Boulder Dodge</title>
 
     <script type="application/javascript">
-        // <![CDATA[
         var INTERVAL = 20;
         var DEBUG = false; //true;
 
@@ -79,9 +72,9 @@ drawImage example
         stars.src = "starbackground.png";
 
         var SpriteImage = new Image();   // Sprite sheet
-        SpriteImage.src = "spaceship.png";
+        SpriteImage.src = "manLRUD_32x32.png";
         var boulderImage = new Image();   // Sprite sheet
-        boulderImage.src = "rolling.png";
+        boulderImage.src = "boulder.png";
 
         // When an image loads, set a variable.
         // This way, we can start once we have everything.
@@ -149,8 +142,8 @@ drawImage example
         // Change the background screen color to black.
         //
         function black() {
-            document.bgColor = "#000000";
-            Fill = "#000000";
+            document.bgColor = "#282a36";
+            Fill = "#282a36";
         }
 
 
@@ -158,8 +151,8 @@ drawImage example
         // Change the background screen color to green.
         //
         function green() {
-            document.bgColor = "#0f6000";
-            Fill = "#0f6000";
+            document.bgColor = "#50fa7b";
+            Fill = "#50fa7b";
         }
 
 
@@ -167,8 +160,8 @@ drawImage example
         // Change the background screen color to red.
         //
         function red() {
-            document.bgColor = "#f04040";
-            Fill = "#f04040";
+            document.bgColor = "#ff5555";
+            Fill = "#ff5555";
         }
 
 
@@ -454,9 +447,9 @@ drawImage example
             }
         }
         function pausetext() {
-            ctx.fillStyle = "#ffffff";
+            ctx.fillStyle = "#bd93f9";
             ctx.fillRect(100, 100, WIDTH - 200, HEIGHT - 200);
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = "#8be9fd";
             ctx.font = "bold 16px Arial";
             ctx.fillText('paused', 200, 240);
             ctx.fillText('press p to contnue', 200, 280);
@@ -471,7 +464,7 @@ drawImage example
             var newY = myY;
 
             switch (key) {
-                case 28:  // Right arrow was pressed
+                case "ArrowRight":  // right arrow was pressed
                     SpriteRow = 1;
                     // Go right
                     newX = newX + moveAmount;
@@ -479,7 +472,7 @@ drawImage example
                         newX = WIDTH - squareWidth;
                     moved = true;
                     break;
-                case 29:  // Left arrow, ASCII 29
+                case "ArrowLeft":  // left arrow was pressed
                     SpriteRow = 0;
                     // Go down
                     newX = newX - moveAmount;
@@ -487,7 +480,7 @@ drawImage example
                         newX = 0;
                     moved = true;
                     break;
-                case 30:  // Up arrow was pressed
+                case "ArrowUp":  // up arrow was pressed
                     SpriteRow = 2;
                     // Go up
                     newY = newY - moveAmount;
@@ -495,7 +488,7 @@ drawImage example
                         newY = 0;
                     moved = true;
                     break;
-                case 31:  // Down arrow was pressed
+                case "ArrowDown":  // down arrow was pressed
                     SpriteRow = 3;
                     // Go down
                     newY = newY + moveAmount;
@@ -503,7 +496,7 @@ drawImage example
                         newY = HEIGHT - squareWidth;
                     moved = true;
                     break;
-                case 32:
+                case "p":
                     if (p == false) {
                         p = true;
                         t = true;
@@ -514,6 +507,7 @@ drawImage example
                     }
                     break;
             }
+
             // Check the new coords
             // newX, newY is just the upper-left corner.
             // Also check the upper-right, lower-left, and lower-right corners.
@@ -531,14 +525,16 @@ drawImage example
 
         }
 
-///]]>
+        // Set up a function to handle key-presses.
+        document['onkeydown'] = function (event) {
+            event = event || window.event;
+            var key = event.key;  // This also works, and returns a string
+            whenKeyPressed(key);
+        };
     </script>
-
 </head>
 
-<body onload="loadComplete()" bgcolor="#0f0000" text="#ffffff">
-
-
+<body onload="loadComplete()" bgcolor="#282a36" text="#ff79c6">
     <center>
         <script type="application/javascript">
             document.write('<center>');
@@ -551,37 +547,6 @@ drawImage example
         </script>
         <h2>Press up/down/left/right to move</h2>
     </center>
-
-    <script type="application/javascript">
-        //
-        // Set up a function to handle key-presses.
-        //
-        // This should work across most browsers.
-        document['onkeydown'] = function (event) {
-            event = event || window.event;
-            var key = event.which || event.cursor;
-            // Check for a special key value, and map it to ASCII.
-            switch (key) {
-                case 37:  // Left arrow, ASCII 29
-                    key = 29;
-                    break;
-                case 38:  // Up arrow, ASCII 30
-                    key = 30;
-                    break; case 39:  // Right arrow, ASCII 28
-                    key = 28;
-                    break;
-                case 40:  // Down arrow, ASCII 31
-                    key = 31;
-                    break;
-                case 80:
-                    key = 32;
-                    break;
-            }
-            //document.getElementById("keydown").innerHTML =
-            //  " key Down event, keycode " + key;
-            whenKeyPressed(key);
-        };
-    </script>
 </body>
 
 </html>
