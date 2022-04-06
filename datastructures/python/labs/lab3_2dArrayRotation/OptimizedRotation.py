@@ -1,13 +1,23 @@
 def optimized_clockwise_rotation(arr: list):
-    arr_length = len(arr)
+    arr_len = len(arr)
 
-    for i in range(arr_length - 1):
-        for j in range(arr_length - 1 - i):
+    # rotate a group of 4 elements at a time in a clockwise
+    # direction collapsing towards the middle of the
+    # array until the whole array has been rotated
+    for i in range(0, int(arr_len / 2)):
+        for j in range(i, arr_len - i - 1):
+
+            # store current cell in temp variable
             temp = arr[i][j]
-            arr[i][j] = arr[arr_length - 1 - j][i]
-            arr[arr_length - 1 - j][i] = arr[arr_length - 1 - i][arr_length - 1 - j]
-            arr[arr_length - 1 - i][arr_length - 1 - j] = arr[j][arr_length - 1 - i]
-            arr[j][arr_length - 1 - i] = temp
+            # move value from bottom-left to top-left
+            arr[i][j] = arr[arr_len - 1 - j][i]
+            # move value from bottom-right to bottom-left
+            arr[arr_len - 1 - j][i] = arr[arr_len - 1 - i][arr_len - 1 - j]
+            # move value from top-right to bottom-right
+            arr[arr_len - 1 - i][arr_len - 1 - j] = arr[j][arr_len - 1 - i]
+            # assign temp to top-right
+            arr[j][arr_len - 1 - i] = temp
+
     return arr
 
 
