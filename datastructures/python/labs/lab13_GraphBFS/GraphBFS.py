@@ -1,66 +1,26 @@
-import java.util.*;
+from collections import defaultdict
 
-// Class representing a directed graph using adjacency lists
-class GraphBFS {
-    int V; // Number of Vertices
-    LinkedList<Integer>[] adj; // adjacency lists
 
-    // Constructor
-    GraphBFS(int V) {
-        this.V = V;
-        adj = new LinkedList[V];
+class Graph:
+    # constructor
+    def __init__(self):
+        # default dictionary to store graph
+        self.graph = defaultdict(list)
 
-        for (int i = 0; i < adj.length; i++)
-            adj[i] = new LinkedList<Integer>();
-    }
+    def add_edge(self, vertex1, vertex2):
+        """Function to add an edge to the graph from vertex1 to vertex2"""
+        self.graph[vertex1].append(vertex2)
 
-    // To add an edge to graph
-    void addEdge(int v, int w) {
-        adj[v].add(w); // Add w to the list of v.
-    } // addEdge
 
-    // prints BFS traversal from a given starting node
-    public void BFS(int node) {
+if __name__ == "__main__":
+    graph = Graph()
+    graph.add_edge(0, 1)
+    graph.add_edge(0, 2)
+    graph.add_edge(1, 3)
+    graph.add_edge(2, 3)
+    graph.add_edge(2, 4)
+    graph.add_edge(3, 5)
+    graph.add_edge(4, 5)
 
-        // mark all the vertices as unvisited (false)
-        boolean visited[] = new boolean[V];
-
-        // create a queue for BFS
-        LinkedList<Integer> queue = new LinkedList<Integer>();
-
-        // print the current node and mark it visited
-        queue.add(node);
-        visited[node] = true;
-
-        while (queue.size() != 0) {
-            // dequeue a vertex from queue and print it
-            node = queue.poll();
-            System.out.print(node + " ");
-
-            // if an adjacent node is hasnt been visited,
-            // enqueue it and mark it visited
-            for (int neighbor : adj[node]) {
-                if (!visited[neighbor]) {
-                    queue.add(neighbor);
-                    visited[neighbor] = true;
-                }
-            }
-        }
-    } // BFS
-
-    public static void main(String args[]) {
-        GraphBFS g = new GraphBFS(6);
-
-        g.addEdge(0, 1);
-        g.addEdge(0, 2);
-        g.addEdge(2, 3);
-        g.addEdge(2, 4);
-        g.addEdge(4, 5);
-        g.addEdge(1, 3);
-        g.addEdge(3, 5);
-
-        System.out.println("Breadth First Traversal");
-
-        g.BFS(0);
-    } // main
-}
+    print("Breadth First Traversal")
+    # graph.bfs(0)
