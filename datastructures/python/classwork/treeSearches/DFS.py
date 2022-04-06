@@ -11,7 +11,7 @@ def print_in_order(root):
         # recur on left child
         print_in_order(root.left)
         # print the data of node
-        print(root.data)
+        print(root.data, end=" ")
         # recur on right child
         print_in_order(root.right)
 
