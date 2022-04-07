@@ -1,89 +1,58 @@
-import java.util.Scanner;
-import java.util.Queue;
-import java.util.ArrayDeque;
-import java.util.LinkedList;
+from collections import deque as dq
 
-public class Dequeue {
 
-    // creating the attribute for queue and dequeue
-    Queue<Integer> mainQ;
-    ArrayDeque<Integer> maxQ;
+class MaxQueue:
+    def __init__(self):
+        # queue to store the element to maintain the order of insertion
+        self.main_q = dq([])
+        # doubly ended queue to get the maximum element in the O(1) time
+        self.max_q = dq([])
 
-    // constructor for the class
-    Dequeue() {
-        mainQ = new LinkedList<>();
-        maxQ = new ArrayDeque<>();
-    }
+    def enque_element(self, element):
+        """Function to push a element into the queue"""
+        # If there is no element
+        # in the queue
+        if len(self.main_q) == 0:
+            self.main_q.append(element)
+            self.max_q.append(element)
 
-    public static void main(String[] args) throws Exception {
-        Dequeue dq = new Dequeue();
-        while (true) {
-            System.out.println("Menu Options ");
-            System.out.println("1. Push");
-            System.out.println("2. Pop");
-            System.out.println("3. Get Max");
-            System.out.println("4. Show Queues");
-            System.out.println("5. Quit");
+        else:
+            self.main_q.append(element)
 
-            Scanner sc = new Scanner(System.in);
-            int choice = sc.nextInt();
-            // allow user to enqueue, dequeue, find max, and show the queues
-            switch (choice) {
-                case 1:
-                    System.out.println("Enter the element");
-                    int n = sc.nextInt();
-                    dq.enqueue(n);
-                    break;
-                case 2:
-                    System.out.println("Element is removed");
-                    dq.dequeue();
-                    break;
-                case 3:
-                    System.out.println("The max-element is " + dq.getMax());
-                    break;
-                case 4:
-                    dq.showQueues();
-                    break;
-                case 5:
-                    return;
-                default:
-                    System.out.println("Please enter one of the options.");
-                    break;
-            }
-        }
-    } // main
+            # Pop the elements out
+            # until the element at
+            # back is greater than
+            # current element
+            while self.max_q and self.max_q[-1] > element:
+                self.max_q.pop()
 
-    public void enqueue(int data) {
-        // find the correct position of the element in the deque and insert it there
-        while (!maxQ.isEmpty() && maxQ.getLast() < data) {
-            // remove the last element from deque
-            maxQ.removeLast();
-        }
-        // add the element at the end
-        maxQ.addLast(data);
-        mainQ.add(data);
-    } // enqueue
+            self.max_q.append(element)
 
-    public void dequeue() {
-        // if the element being dequeued matches the current max, remove the current max
-        if (maxQ.getFirst() == mainQ.peek()) {
-            maxQ.removeFirst();
-        }
-        mainQ.remove();
-    } // dequeue
+    def deque_element(self):
+        """Function to pop the element out from the queue"""
+        # condition when the minimum
+        # element is the element at
+        # the front of the deque
+        if self.main_q[0] == self.max_q[0]:
+            self.main_q.popleft()
+            self.max_q.popleft()
 
-    // get the maximum element from the queue
-    public int getMax() throws Exception {
-        // check if the element is empty
-        if (mainQ.isEmpty())
-            throw new Exception("Queue is Empty");
-        else
-            return maxQ.getFirst();
-    } // getMax
+        else:
+            self.main_q.popleft()
 
-    // print the main and max queue
-    public void showQueues() {
-        System.out.println("Main: front--> " + mainQ);
-        System.out.println("Max: front--> " + maxQ);
-    } // showQueues
-}
+    def get_max(self):
+        """function to get the maximum element from the queue"""
+        return self.max_q[0]
+
+
+if __name__ == "__main__":
+    deque = MaxQueue()
+    example = [1, 2, 4]
+
+    # loop to enqueue element
+    for i in range(3):
+        deque.enque_element(example[i])
+
+    print(deque.get_max())
+    deque.deque_element()
+    print(deque.get_max())
