@@ -1,4 +1,5 @@
 def make_array() -> list[int]:
+
     # user decides how long they want the array
     length = int(input("How long would you like to make your array? "))
 
