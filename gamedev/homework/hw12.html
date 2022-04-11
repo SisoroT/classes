@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <title>Dialog - Ryan Taylor</title>
+
+    <script type="application/javascript">
+        // <![CDATA[
+
+        var theCanvas;
+        var theContext;
+        var CANVASWIDTH = 800;
+        var CANVASHEIGHT = 480;
+
+
+        var mydialog = new Array();            // Array of options
+        var prompt = " ";   // Instructions for user
+        var optionKeys = "ABCD";               // Possible options
+        var optionKeyIndex = 0;                // Index into optionKeys
+        // (which option the user chose)
+        var start = false;
+        var evidence = false;
+        var car = false;
+        var follow = false;
+        var end = false;
+
+        var askAboutEvidence = new Array("Did you hear any shots around that time?", "We're trying to trace a tall man in jogging clothes. Did you see him?",
+            "When you came out, did you see a blue car go by?", "That's all we want to know for now.");
+        var aboutTheCar = new Array("Did you catch a look at the license plate?", "Do you remember the model? Foreign, domestic?", "Did you see the driver?");
+
+        var followUp = new Array("I've got another question about the car.", "I need to ask you again about your alibi.", "All right, that'll do for now. Don't leave town.");
+
+
+        function show_dialog() {
+            var Yspace = 22;
+            var Yloc = 40;
+            var Xloc = 200;
+
+            theContext.clearRect(0, 0, CANVASWIDTH, CANVASHEIGHT);
+            theContext.fillStyle = "#bd93f9";
+            theContext.font = "bold 16px Arial";
+
+            var line;
+
+            // Show the prompt
+            theContext.fillText(prompt, Xloc, Yloc);
+            Yloc += Yspace;
+
+            // Now show the options.
+            // Make sure that this does not show more options than supported (4).
+            for (var m = 0; (m < mydialog.length) && (m < optionKeys.length); m++) {
+                // Build the line of text, e.g. if the first one has text "hello"
+                // then line should be "A. hello"
+                line = optionKeys[m] + ". " + mydialog[m].text;
+                // Show this line on the canvas
+                theContext.fillText(line, Xloc, Yloc);
+                // Update Yloc to the next line down.
+                // We do not update Xloc, since all lines should be left-justified.
+                Yloc += Yspace;
+            }
+        }
+
+
+        // Given a string (str), add it to the list of options.
+        function add_to_options(str) {
+            mydialog.push({text: str});
+        }
+
+
+        // Given an index, remove the corresponding text from the list of options.
+        function del_from_options(index) {
+            mydialog.splice(index, 1);
+        }
+
+
+        // The "paragraph" is literally a paragraph that shows on the screen.
+        // This is mostly for debugging. It logs the user's interactions.
+        // Given the string str, append it to the text in the paragraph.
+        function add_to_paragraph(str) {
+            var oldstuff = document.getElementById("results").innerHTML;
+            // console.log("old stuff is " + oldstuff);
+            oldstuff += str;
+            document.getElementById("results").innerHTML = oldstuff;
+        }
+
+        function delete_all_options() {
+            while (mydialog.length) {
+                mydialog.pop();
+            }
+        }
+
+
+        // Call the function to process this input.
+        function processResponse() {
+            var valid = false;
+
+            // The user pressed a key, and optionKeyIndex should be updated.
+            // First, make sure the key pressed is a valid choice.
+            if (optionKeyIndex > -1) {
+                // Is there an option for this key? E.g. this program expects that
+                // A, B, C, or D are valid choices, but if the options are "True" and
+                // "False" only, then C and D are invalid.
+                if (optionKeyIndex < mydialog.length) {
+                    valid = true;
+                } else {
+                    // Normally valid, but not for the current mydialog.
+                    add_to_paragraph("Option " + optionKeys[optionKeyIndex]
+                        + " selected, but no text for this.<br>");
+                }
+            }
+
+            // If the user selects item 1, remove it from the list
+            if (valid) {
+                var i;
+                if (evidence) {
+                    if (mydialog[optionKeyIndex].text == askAboutEvidence[0]) {
+                        del_from_options(optionKeyIndex);
+                        prompt = "No, no shots. I'd remember shots.";
+                        i = 0;
+                    }
+                    else if (mydialog[optionKeyIndex].text == askAboutEvidence[1]) {
+                        del_from_options(optionKeyIndex);
+                        prompt = "Not that I remember.";
+                        i = 1;
+                    }
+                    else if (mydialog[optionKeyIndex].text == askAboutEvidence[2]) {
+                        aboutTheCarTree();
+                        evidence = false;
+                        prompt = "Yeah...going real fast! A sports car.";
+                        i = 2;
+                    }
+                    else if (mydialog[optionKeyIndex].text == askAboutEvidence[3]) {
+                        prompt = "Good, 'cause I got places to be, you know?";
+                        end = true;
+                        i = 3;
+                    }
+                    add_to_paragraph("Option " + optionKeys[optionKeyIndex]
+                        + " selected, [" + askAboutEvidence[i] + "] Response, [" + prompt + " ]<br>");
+                }
+                else if (car) {
+                    if (mydialog[optionKeyIndex].text == aboutTheCar[0]) {
+                        followUpTree();
+                        car = false;
+                        prompt = "What, I got a photographic memory? No.";
+                        i = 0;
+                    }
+                    else if (mydialog[optionKeyIndex].text == aboutTheCar[1]) {
+                        followUpTree();
+                        car = false;
+                        prompt = "Maybe a Porsche. I'm not a car guy.";
+                        i = 1;
+                    }
+                    else if (mydialog[optionKeyIndex].text == aboutTheCar[2]) {
+                        followUpTree();
+                        car = false;
+                        prompt = "It was a man. That's all I can say.";
+                        i = 2;
+                    }
+                    add_to_paragraph("Option " + optionKeys[optionKeyIndex]
+                        + " selected, [" + aboutTheCar[i] + "] Response, [" + prompt + " ]<br>");
+                }
+                else if (follow) {
+                    if (mydialog[optionKeyIndex].text == followUp[0]) {
+                        aboutTheCarTree();
+                        follow = false;
+                        prompt = "Fire away";
+                        i = 0;
+                    }
+                    else if (mydialog[optionKeyIndex].text == followUp[1]) {
+                        askAboutEvidenceTree();
+                        follow = false;
+                        prompt = "It's not going to be any different.";
+                        i = 1;
+                    }
+                    else if (mydialog[optionKeyIndex].text == followUp[2]) {
+                        prompt = "Thanks for nothing.";
+                        end = true;
+                        i = 2;
+                    }
+                    add_to_paragraph("Option " + optionKeys[optionKeyIndex]
+                        + " selected, [" + followUp[i] + "] Response, [" + prompt + " ]<br>");
+                }
+                if (end) {
+                    delete_all_options();
+                    document.bgColor = "#6272a4";
+                    add_to_paragraph("End<br>");
+                }
+            }
+            show_dialog();
+        }
+
+        function askAboutEvidenceTree() {
+            evidence = true;
+            if (start == false) {
+                prompt = "How can I help you officer?";
+                start = true;
+            }
+            else if (start = true) {
+                delete_all_options();
+            }
+
+            for (var i = 0; i < askAboutEvidence.length; i++) {
+                add_to_options(askAboutEvidence[i]);
+            }
+        }
+
+        function aboutTheCarTree() {
+            car = true;
+            delete_all_options();
+            for (var i = 0; i < aboutTheCar.length; i++) {
+                add_to_options(aboutTheCar[i]);
+            }
+
+        }
+
+        function followUpTree() {
+            follow = true;
+            delete_all_options();
+            for (var i = 0; i < followUp.length; i++) {
+                add_to_options(followUp[i]);
+            }
+        }
+
+
+        // ************************************************************************
+        //      Start of key-press functions
+        // ************************************************************************
+
+        // handle key presses
+        document['onkeydown'] = function (event) {
+            event = event || window.event;
+            var key = event.key || event.cursor;
+            whenKeyPressed(key);
+        };
+
+
+        function whenKeyPressed(key) {
+            switch (key.toUpperCase()) {
+                case 'A':   // 'A'
+                    // Option A selected
+                    console.log("Option A selected");
+                    optionKeyIndex = 0;
+                    break;
+                case 'B':   // 'B'
+                    // Option B selected
+                    console.log("Option B selected");
+                    optionKeyIndex = 1;
+                    break;
+                case 'C':   // 'C'
+                    // Option C selected
+                    console.log("Option C selected");
+                    optionKeyIndex = 2;
+                    break;
+                case 'D':   // 'D'
+                    // Option D selected
+                    console.log("Option D selected");
+                    optionKeyIndex = 3;
+                    break;
+                default:
+                    add_to_paragraph("Unexpected key " + key + "<br>");
+                    optionKeyIndex = -1;
+                    break;
+            }
+            processResponse();
+        }
+    </script>
+
+
+</head>
+
+<body bgcolor="#282a36" text="#ff79c6">
+    <center>
+        <script type="application/javascript">
+            document.writeln("Dialog tree - by Ryan Taylor<br>");
+
+            // Make the main canvas.
+            document.writeln('<canvas id="theCanvas" tabindex="1" width="'
+                + CANVASWIDTH + '" height="' + CANVASHEIGHT + '">');
+            document.writeln('<\/canvas>');
+            // Defining theContext
+            theCanvas = document.getElementById("theCanvas");
+            theContext = theCanvas.getContext("2d");
+
+            document.writeln('<p id="results">Results:<br></p>');
+
+            // Populate the list of options.
+            askAboutEvidenceTree();
+            // Draw the list of options on the canvas.
+            show_dialog();
+        </script>
+    </center>
+</body>
+
+</html>
