@@ -1,0 +1,155 @@
+<html>
+
+<head>
+    <title>Aging Trees</title>
+    <script type="application/javascript">
+        var INTERVAL = 1000;
+        var DEBUG = false; //true;
+
+        var canvas;             // The canvas shown on the page.
+        var ctx;                // The context, used to access the canvas.
+
+        var SpriteRow = 0;      // Row of the graphic to show
+        var MaxSpriteRow = 1;   // How many rows of images
+        var MaxSpriteCol = 1;   // How many columns of images
+
+        var SpriteWidth = 32;   // Width, Height of each subimage
+        var SpriteHeight = 32;
+
+        var SpriteImage = new Image();   // Sprite sheet
+        SpriteImage.src = "features_trees.png";
+
+
+        // Set up a timer to execute every second.
+        var myInterval;
+
+        // Array for field of trees
+        var ArrayField = [
+            0, 1, 0, 2, 1, 3, 1, 3, 5, 6,
+            7, 3, 4, 5, 6, 8, 9, 2, 3, 5,
+            0, 1, 0, 2, 1, 6, 1, 3, 5, 6,
+            7, 3, 4, 5, 6, 8, 9, 2, 3, 5,
+            0, 1, 0, 2, 1, 4, 1, 3, 5, 6,
+            7, 3, 4, 5, 6, 8, 9, 2, 3, 5,
+            0, 1, 0, 2, 1, 10, 1, 3, 5, 6,
+            7, 3, 4, 5, 6, 8, 9, 2, 3, 5,
+            0, 1, 0, 2, 1, 11, 1, 3, 5, 6,
+            7, 3, 4, 5, 6, 8, 9, 2, 3, 5];
+
+        var MAXCOL = 10;
+        var MAXROW = 10;
+        var MaxSpriteCol = 11;
+
+        function calcSpriteX(col, sprW) {
+            var SpriteX = col * sprW;
+            return SpriteX;
+        }
+
+        function calcSpriteY(row, sprH) {
+            var SpriteY = row * sprH;
+            return SpriteY;
+        }
+
+        function eraseSprite(SpriteX, SpriteY, SpriteWidth, SpriteHeight) {
+            // erase sprite
+            ctx.clearRect(SpriteX, SpriteY, SpriteWidth, SpriteHeight);
+        }
+
+        function drawSprite(SpriteX, SpriteY, SpriteCol) {
+            // draw sprite
+            eraseSprite(SpriteX, SpriteY, SpriteWidth, SpriteHeight)
+
+            //ctx.drawImage(SpriteImage, SpriteX, SpriteY);
+            ctx.drawImage(SpriteImage, SpriteCol * SpriteWidth, SpriteRow * SpriteHeight,
+                SpriteWidth, SpriteHeight, SpriteX, SpriteY, SpriteWidth, SpriteHeight);
+
+            // update the next image to show
+            //SpriteCol++;
+            if (SpriteCol >= MaxSpriteCol) {
+                SpriteCol = -1;
+            }
+            return SpriteCol;
+        }
+
+        function loadComplete() {
+            canvas = document.getElementById("theCanvas");
+            console.log("Load is complete.");
+            ctx = canvas.getContext("2d");
+            myInterval = self.setInterval(function () {Tick()}, INTERVAL);
+        }
+
+        function Tick() {
+            var i, j, k, l, m, n;
+            for (i = 0; i < MAXROW; i++) {
+                for (j = 0; j < MAXCOL; j++) {
+                    k = calcSpriteX(i, SpriteWidth);
+                    l = calcSpriteY(j, SpriteHeight);
+                    age(i, j, MAXCOL);
+                    m = ArrayField[i * MAXCOL + j];
+                    m = drawSprite(k, l, m);
+                    ArrayField[i * MAXCOL + j] = m;
+                }
+            }
+            if (INTERVAL < 2000)
+                INTERVAL += 100;
+        }
+
+        function age(a, b, n) {
+            var count = 0, m = a * n + b;
+
+            if (ArrayField[(a - 1) * n + (b - 1)] > 0)
+                count++;
+
+            if (ArrayField[(a - 1) * n + b] > 0)
+                count++;
+
+            if (ArrayField[(a - 1) * n + b + 1] > 0)
+                count++;
+
+            if (ArrayField[a * n + b - 1] > 0)
+                count++;
+
+            if (ArrayField[a * n + b + 1] > 0)
+                count++;
+
+            if (ArrayField[(a + 1) * n + b - 1] > 0)
+                count++;
+
+            if (ArrayField[(a + 1) * n + b] > 0)
+                count++;
+
+            if (ArrayField[(a + 1) * n + b + 1] > 0)
+                count++;
+
+            switch (count) {
+                case 2: ArrayField[m]++;
+                    break;
+
+                case 3: if (ArrayField[m] == 0)
+                    ArrayField[m]++;
+                    break;
+
+                case 6: ArrayField[m]++;
+                    break;
+
+                case 7: ArrayField[m]++;
+                    break;
+
+                case 8:
+                    ArrayField[m]++;
+                    break;
+
+                default:
+                    ArrayField[m] += 0;
+            }
+        }
+    </script>
+</head>
+
+<body onload="loadComplete()" bgcolor="#282a36" text="#ff79c6">
+    <center>
+        <canvas id="theCanvas" tabindex="1" width="320" height="320"></canvas>
+    </center>
+</body>
+
+</html>
