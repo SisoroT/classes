@@ -1,29 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Wordle</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Wordle</title>
-    <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-
-    <div class="game-container">
-        <div class="title-container">
-            <h1>Wordle Royale</h1>
+    <body>
+        <div class="game-container">
+            <div class="title-container">
+                <h1>Wordle Royale</h1>
+            </div>
+            <div class="message-container"></div>
+            <div class="tile-container"></div>
+            <div class="key-container"></div>
+            <div class="instructions-container">
+                <h2>All gray squares = -1 guess</h2>
+                <h2>First yellow square = +1 guess</h2>
+                <h2>First green square = +2 guesses</h2>
+            </div>
         </div>
-        <div class="message-container"></div>
-        <div class="tile-container"></div>
-        <div class="key-container"></div>
-        <div class="instructions-container">
-            <h2>All gray squares = -1 guess</h2>
-            <h2>First yellow square = +1 guess</h2>
-            <h2>First green square = +2 guesses</h2>
-        </div>
-    </div>
 
-    <script src="app.js"></script>
-</body>
-
+        <script src="app.js"></script>
+    </body>
 </html>
