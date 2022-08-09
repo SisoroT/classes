@@ -36,9 +36,9 @@ Gray - Letter is **not in the correct answer** at all
 
 # Different Situations
 
-Due to the addition of rewards and punishments, there are an abundance of different situations one can run into while playing Wordle Royale.<br>
+Due to the addition of rewards and punishments, there are an abundance of different situations a player can run into while playing Wordle Royale.<br>
 
-Here are the situations a player may find themself in:
+_Here are the situations a player may find themself in:_
 
 ## All Gray Squares
 
@@ -74,13 +74,13 @@ https://user-images.githubusercontent.com/65800865/183723836-7d8ce2bb-7598-4f20-
 
 ## Winning
 
-When a player **guesses the correct word**, **they win** the game.
+When a player **guesses the correct word, they win** the game.
 
 https://user-images.githubusercontent.com/65800865/183723966-238e38cb-8330-46ad-9612-128bb2176d9e.mp4
 
 ## Losing
 
-When a player **runs out of guesses**, **they lose** the game and are **told what the correct word was**.
+When a player **runs out of guesses, they lose** the game and are **told what the correct word was**.
 
 https://user-images.githubusercontent.com/65800865/183724021-0bb3e48a-c52f-4b1d-adf4-0d6069ada5eb.mp4
 
