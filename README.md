@@ -18,7 +18,7 @@ Gray - Letter is **not in the correct answer** at all
 
 ### What's Different?
 
-**Wordle Royale** follows the same premise of the original Wordle but with a twist. **Each guess** will either **reward** or **punish** the player by either **adding or removing the remaining guesses**. In addition, **word length is six letters** instead of five and the **starting number of guesses is three** instead of six.
+**Wordle Royale** follows the same premise of the original Wordle but with a twist. **Each guess** will either **reward or punish** the player by either **adding or removing the remaining guesses**. In addition, **word length is six letters** instead of five and the **starting number of guesses is three** instead of six.
 
 <p align="center">
   <img src="./assets/main-page.png"/>
