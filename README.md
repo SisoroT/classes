@@ -54,9 +54,8 @@ https://user-images.githubusercontent.com/65800865/183723744-acd4444a-cd62-4950-
 
 ## First Green Square
 
-The **first guess** with a **at least one green** square will result in gaining **two extra guesses**.<br>
+The **first guess** with a **at least one green** square will result in gaining **two extra guesses**. Note that in this example the player has **two green squares on this guess but still only receives the reward for one green square**.<br>
 
-Note that in this example the player has **two green squares on this guess but still only receives the reward for one green square**.<br>
 _In the situation a reward has not been dealt and the players guess includes multiple of the same color square, the player will receive the reward of one of the squares._
 
 https://user-images.githubusercontent.com/65800865/183723670-293bc1de-6545-4445-8d71-797b5f3739cd.mp4
