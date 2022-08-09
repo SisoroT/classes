@@ -8,7 +8,26 @@ This is a repository to document the work done in some of my university classes.
 
 # Wordle Royale
 
--   [Worlde Royale](#wordle-royale)
+World Royale is a spin on the popular web-based word game [Wordle](https://en.wikipedia.org/wiki/Wordle), where players get **six chances** to guess a **five letter word**.
+After each guess, players are **given information via the color of the tile** around each letter of a guess.<br>
+The tile colors and their meanings are as follows:
+
+Green = Letter is **in the correct answer** and **in that position**
+Yellow = Letter is **in the correct answer** but **not that position**
+Gray = Letter is **not in the correct answer** at all
+
+### What's Different?
+
+##### What's Different?
+
+###### What's Different?
+
+Wordle Royale follows the same premise of the original wordle but with a twist. **Each guess** will either **reward** or **punish** the player by either **adding or removing the remaining guesses**. In addition, **word length is six letters** instead of five and the **starting number of guesses is three** instead of six.
+
+<p align="center">
+  <img src="./assets/main-page.png"/>
+</p>
+
 -   [Different Situations](#different-situations)
     -   [All Gray Squares](#all-gray-squares)
     -   [First Yellow Square](#first-yellow-square)
@@ -18,6 +37,8 @@ This is a repository to document the work done in some of my university classes.
     -   [Winning](#winning)
     -   [Losing](#losing)
 -   [Want to Learn More?](#learn-more)
+
+# Different Situations
 
 ## All Gray Squares
 
