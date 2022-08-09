@@ -36,37 +36,51 @@ Gray - Letter is **not in the correct answer** at all
 
 # Different Situations
 
+Due to the addition of rewards and punishments, there are an abundance of different situations one can run into while playing Wordle Royale.<br>
+
+Here are the situations a player may find themself in:
+
 ## All Gray Squares
+
+Any guess with **all gray squares** will result in **losing one of the remaining guesses**.
 
 https://user-images.githubusercontent.com/65800865/183723574-d5966e1a-882c-4ecf-8a80-11a8f22d5e38.mp4
 
 ## First Yellow Square
 
+The **first guess** with a **at least one yellow** square will result in gaining **one extra guess**.
+
 https://user-images.githubusercontent.com/65800865/183723744-acd4444a-cd62-4950-ae5f-2bde20b47316.mp4
 
 ## First Green Square
+
+The **first guess** with a **at least one green** square will result in gaining **two extra guesses**.
 
 https://user-images.githubusercontent.com/65800865/183723670-293bc1de-6545-4445-8d71-797b5f3739cd.mp4
 
 ## First Green and Yellow Squares
 
+If a player has **not yet used their first yellow or green** square, **both rewards will be dealt** resulting in a gain of **three extra guesses**.
+
 https://user-images.githubusercontent.com/65800865/183723788-ffa74ba6-a0d0-47b1-a557-ae419763a774.mp4
 
 ## Subsequent Green or Yellow Squares
+
+**Subsequent green or yellow** squares will yield **no rewards** and **no punishments**.
 
 https://user-images.githubusercontent.com/65800865/183723836-7d8ce2bb-7598-4f20-b53a-db5c064f6c4d.mp4
 
 ## Winning
 
+When a player **guesses the correct word**, **they win** the game.
+
 https://user-images.githubusercontent.com/65800865/183723966-238e38cb-8330-46ad-9612-128bb2176d9e.mp4
 
 ## Losing
 
-https://user-images.githubusercontent.com/65800865/183724021-0bb3e48a-c52f-4b1d-adf4-0d6069ada5eb.mp4
+When a player **runs out of guesses**, **they lose** the game and are **told what the correct word was**.
 
-<p align="center">
-  <img src="./assets/main-page.png"/>
-</p>
+https://user-images.githubusercontent.com/65800865/183724021-0bb3e48a-c52f-4b1d-adf4-0d6069ada5eb.mp4
 
 # Learn More
 
