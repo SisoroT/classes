@@ -8,7 +8,7 @@ This is a repository to document the work done in some of my university classes.
 
 # Wordle Royale
 
-**World Royale** is a spin on the popular web-based word game [Wordle](https://en.wikipedia.org/wiki/Wordle). Traditional Wordle gives players **6 chances** to guess a **5 letter word**. After each guess, players are **given information via the color of the tile** around each letter of a guess.<br>
+**World Royale** is a spin on the popular web-based word game [Wordle](https://en.wikipedia.org/wiki/Wordle). Traditional Wordle gives players **6 chances** to guess a **5 letter word**. After each guess, players are **given information via the color of the tile** around each letter.<br>
 The tile colors and their meanings are as follows:
 
 Green - Letter is **in the correct answer** and **in that position**<br>
