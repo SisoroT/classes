@@ -200,13 +200,14 @@ plt.subplots_adjust(
 )
 
 # Write out the plots as an image
-# plt.savefig("plots.png")
+plt.savefig("plots.png")
 
-x, y, z = sympy.symbols("x y z")
-func = y * sympy.sin(5 * x) + sympy.E ** (y * z) + sympy.ln(z)
-df_x = sympy.diff(func, x)
-df_y = sympy.diff(func, y)
-df_z = sympy.diff(func, z)
-print(df_x)
-print(df_y)
-print(df_z)
+# sympy to find derivatives
+# x, y, z = sympy.symbols("x y z")
+# func = y * sympy.sin(5 * x) + sympy.E ** (y * z) + sympy.ln(z)
+# df_x = sympy.diff(func, x)
+# df_y = sympy.diff(func, y)
+# df_z = sympy.diff(func, z)
+# print(sympy.latex(df_x))
+# print(sympy.latex(df_y))
+# print(sympy.latex(df_z))
