@@ -3,62 +3,42 @@ from datetime import date
 import sys
 import sqlite3
 
-from sklearn.preprocessing import OrdinalEncoder
 
-
-def series_report(series, is_ordinal=False, is_continuous=False, is_categorical=False):
+def series_report(
+    series,
+    is_ordinal=False,
+    is_continuous=False,
+    is_categorical=False,
+):
     """Takes in a series from a pandas dataframe and reports various
     information depending on the type of data inputted.
     """
+    # print series name and type
+    print(f"{series.name}: {series.dtype}")
+    # find amount of missing information
+    missing_count = series.isnull().sum()
+
+    if missing_count > 0:
+        # show percentage missing
+        percentage = round(missing_count / len(series) * 100, 2)
+        print(f"\tMissing in {missing_count} rows ({percentage}%)")
+
+    if is_ordinal:
+        # print range
+        print(f"\tRange: {series.min()} - {series.max()}")
+
+    if is_continuous:
+        # find mean, SD, and median
+        stats = series.describe()
+        print(f"\tMean: {stats['mean']:.2f}")
+        print(f"\tStandard deviation: {stats['std']:.2f}")
+        print(f"\tMedian: {stats['50%']:.2f}")
+
     if is_categorical:
-        # print series name and type
-        print(f"{series.name}: {series.dtype}")
-
-        missing = series.isnull()
-        # show percentage missing
-        missing_pct = missing.sum() / len(series) * 100
-        print(f"\tMissing in {missing.sum()} rows ({round(missing_pct, 1)}%)")
-
+        # find the number of entries for each value in the series
         series_counts = series.value_counts()
-        # print results
         for value in series_counts.index:
-            print(f'\t\t{series_counts.loc[value]}: "{value}"')
-
-    elif is_ordinal and not is_continuous:
-        series = df[series.name]
-        # print series name and type
-        print(f"{series.name}: {series.dtype}")
-
-        # find range
-        rng = f"{series.min()} - {series.max()}"
-
-        # print results
-        print(f"\tRange: {rng}")
-
-    elif is_ordinal and is_continuous:
-        # print series name and type
-        print(f"{series.name}: {series.dtype}")
-
-        missing = series.isnull()
-        # show percentage missing
-        missing_pct = missing.sum() / len(series) * 100
-        if missing_pct != 0:
-            print(f"\tMissing in {missing.sum()} rows ({round(missing_pct, 1)}%)")
-
-        # find range, mean, SD, and median
-        rng = f"{series.min()} - {series.max()}"
-        mean = round(series.mean(), 2)
-        st_dev = round(series.std(), 2)
-        median = round(series.median(), 2)
-
-        # print results
-        print(f"\tRange: {rng}")
-        print(f"\tMean: {mean}")
-        print(f"\tStandard deviation: {st_dev}")
-        print(f"\tMedian: {median}")
-
-    else:
-        print("Not a valid series...")
+            print(f"\t\t{series_counts.loc[value]}: {value}")
 
 
 # Check command line arguments
@@ -81,7 +61,7 @@ print(f"Columns: {col_count}")
 
 # Do a report for each column
 print("\n*** Columns ***")
-# series_report(df.index, is_ordinal=True)
+series_report(df.index, is_ordinal=True)
 series_report(df["gender"], is_categorical=True)
 series_report(df["height"], is_ordinal=True, is_continuous=True)
 series_report(df["waist"], is_ordinal=True, is_continuous=True)
@@ -90,23 +70,21 @@ series_report(df["dob"], is_ordinal=True)
 series_report(df["death"], is_ordinal=True)
 
 # connect to database
-conn = sqlite3.connect("employees.db")
-# create a cursor
-curse = conn.cursor()
+with sqlite3.connect("employees.db") as conn:
+    # create a cursor
+    curse = conn.cursor()
 
-curse.execute(
-    """
-        SELECT rowid, AVG(height)
-        FROM Employee
-        WHERE salary > 35000
+    curse.execute(
         """
-)
-items = curse.fetchall()
+            SELECT rowid, AVG(height)
+            FROM Employee
+            WHERE salary > 35000
+            """
+    )
+    items = curse.fetchall()
 
-for item in items:
-    print(item)
+    for item in items:
+        print(item)
 
-# commit command
-conn.commit()
-# close connection
-conn.close()
+    # commit command
+    conn.commit()
