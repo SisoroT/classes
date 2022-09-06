@@ -27,7 +27,7 @@ print(f"Read {n} rows, {d - 1} features from '{infilename}'.")
 # Don't mess with the first column (the 1s)
 ## Your code here
 
-# Standardize X to be X' 
+# Standardize X to be X'
 Xp = ## Your code here
 
 # First guess for B is "all coefficents are zero"
@@ -37,8 +37,8 @@ B = ## Your code here
 errors = ## Your code here
 
 for i in range(max_steps):
- 
-    # Compute the gradient 
+
+    # Compute the gradient
     ## Your code here
 
     # Compute a new B (use `t`)
