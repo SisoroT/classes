@@ -24,15 +24,14 @@ fig, axs = plt.subplots(3, 2, figsize=(12, 12))
 
 # create data and labels
 data = bikes_df["status"].value_counts()
-lbs = sorted(bikes_df["status"].unique())
 
 # set the title of the pie chart
 axs[0][0].set_title("Current Status")
 
 # create pie chart and store the different components in variables
-wedges, texts, autotexts = axs[0][0].pie(
+wedges, texts, pcts = axs[0][0].pie(
     data,
-    labels=lbs,
+    labels=data.index,
     autopct="%1.1f%%",
     textprops={"color": "w"},
 )
@@ -53,15 +52,16 @@ quart1, half, quart3 = data.quantile([0.25, 0.5, 0.75])
 upper = bikes_df["purchase_price"].max()
 
 # set labels for the title and axes of the graph
-axs[0][1].set_title("Price Histogram (1000 bikes)")
+axs[0][1].set_title(f"Price Histogram ({len(data)} bikes)")
 axs[0][1].set(xlabel="US Dollars", ylabel="Number of Bikes")
 # add dolar sign to x-axis
 axs[0][1].xaxis.set_major_formatter("${x:.0f}")
 
 # create histogram
-axs[0][1].hist(data, bins=20, ec="teal", fill=False, histtype="step")
+axs[0][1].hist(data, bins=20, ec="teal", histtype="step")
 
 
+# Add Vertical Lines
 # v-line for minimum
 axs[0][1].axvline(lower, color="k", linestyle="dashed")
 axs[0][1].text(lower + 10, 11, f"min: ${round(lower)}", rotation=90)
@@ -88,10 +88,6 @@ axs[0][1].text(upper + 10, 11, f"max: ${round(upper)}", rotation=90)
 # make price x axis and weight y axis
 x_axis, y_axis = bikes_df["purchase_price"], bikes_df["weight"]
 
-# calculate the equation for the trendline
-tl_calc = np.polyfit(x_axis, y_axis, 1)
-tl = np.poly1d(tl_calc)
-
 # set labels for the title and axes of the graph
 axs[1][0].set_title("Price vs. Weight")
 axs[1][0].set(xlabel="Price", ylabel="Weight")
@@ -99,8 +95,12 @@ axs[1][0].set(xlabel="Price", ylabel="Weight")
 axs[1][0].xaxis.set_major_formatter("${x:.0f}")
 axs[1][0].yaxis.set_major_formatter("{x:.0f} kg")
 
-# plot scatter plot and line for trend line
+# plot scatter plot
 axs[1][0].scatter(x_axis, y_axis, s=1, c="teal", alpha=0.75)
+
+# calculate the equation for the trendline and plot it
+tl_calc = np.polyfit(x_axis, y_axis, 1)
+tl = np.poly1d(tl_calc)
 axs[1][0].plot(x_axis, tl(x_axis), "r")
 
 
@@ -128,14 +128,14 @@ axs[1][1].grid()
 
 # empty list to hold data
 data = []
+
 # create dictionary with all brands and their median prices
 medians_dict = bikes_df.groupby(by=["brand"])["purchase_price"].median()
-
-# sort dictionaries by median
-unique_brands = dict(sorted(medians_dict.items(), key=lambda item: item[1]))
+# sort dictionary by median
+unique_brands = medians_dict.sort_values().index
 
 # create a list of with the pricing info for each brand
-for brand in unique_brands.keys():
+for brand in unique_brands:
     data.append(bikes_df.loc[bikes_df["brand"] == brand, "purchase_price"])
 
 # set the title
@@ -167,26 +167,26 @@ axs[2][0].grid(True)
 
 # empty list to hold data
 data = []
+
 # create dictionary with all brands and their median prices
 medians_dict = bikes_df.groupby(by=["brand"])["purchase_price"].median()
-
-# sort dictionaries by median
-unique_brands = dict(sorted(medians_dict.items(), key=lambda item: item[1]))
+# sort dictionary by median
+unique_brands = medians_dict.sort_values().index
 
 # create a list of with the pricing info for each brand
-for brand in unique_brands.keys():
+for brand in unique_brands:
     data.append(bikes_df.loc[bikes_df["brand"] == brand, "purchase_price"])
 
 # set the title
 axs[2][1].set_title("Brand vs. Price")
 # label x axis ticks
 axs[2][1].set_xticks([1, 2, 3, 4, 5, 6])
-axs[2][1].set_xticklabels(unique_brands.keys())
+axs[2][1].set_xticklabels(unique_brands)
 # add $ to y axis prices
 axs[2][1].yaxis.set_major_formatter("${x:.0f}")
 
 # create violiln plot
-axs[2][1].violinplot(data, points=200, showmedians=True, widths=0.7)
+axs[2][1].violinplot(data, showmedians=True, widths=0.7, bw_method=0.5)
 
 
 # Create some space between subplots
@@ -200,7 +200,8 @@ plt.subplots_adjust(
 )
 
 # Write out the plots as an image
-plt.savefig("plots.png")
+# plt.savefig("plots.png")
+plt.show()
 
 # sympy to find derivatives
 # x, y, z = sympy.symbols("x y z")
