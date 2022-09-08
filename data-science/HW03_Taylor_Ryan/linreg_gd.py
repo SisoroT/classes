@@ -54,14 +54,20 @@ for i in range(max_steps):
     errors[i] = np.mean((Yhat - Y) ** 2)
 
     # Check to see if we have converged
+    # if past the first iteration and error has started to increase, break out
     if i > 0 and errors[i] > errors[i - 1]:
         break
 
 print(f"Took {i} iterations to converge")
 
 # "Unstandardize" the coefficients
+# print(f"\nPrevious B:{B}")
 B[1:] = B[1:] / std[1:]
 B[0] = B[0] - np.sum(B[1:] * means[1:])
+# print(f"\nFinal B: {B}")
+
+
+# print(errors)
 
 # Show the result
 print(util.format_prediction(B, labels))
@@ -72,9 +78,10 @@ print(f"R2 = {R2:f}")
 
 # Draw a graph
 fig1 = plt.figure(1, (4.5, 4.5))
-plt.plot(errors[:i], "o-")
-plt.xlabel("Iteration")
-plt.ylabel("Avg Error")
-plt.title("Avg Error vs. Iteration")
+plt.title("Convergence")
+plt.xlabel("Iterations")
+plt.ylabel("Mean Squared Error")
+
+plt.plot(errors[:i])
 # plt.show()
-fig1.savefig("err.png")
+# fig1.savefig("err.png")
