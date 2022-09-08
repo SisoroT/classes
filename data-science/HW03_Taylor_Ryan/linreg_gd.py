@@ -18,8 +18,8 @@ max_steps = 1000
 # Get the arg and read in the spreadsheet
 infilename = sys.argv[1]
 X, Y, labels = util.read_excel_data(infilename)
-n, d = X.shape
-print(f"Read {n} rows, {d - 1} features from '{infilename}'.")
+rows, cols = X.shape
+print(f"Read {rows} rows, {cols - 1} features from '{infilename}'.")
 
 # Get the mean and standard deviation for each column
 means = X.mean(axis=0)
@@ -33,14 +33,14 @@ std[0] = 1.0
 Xp = (X - means) / std
 
 # First guess for B is "all coefficients are zero"
-B = np.zeros(d)
-# B = np.zeros(Y.size)
+B = np.zeros(cols)
 
 # Create a numpy array to record avg error for each step
 errors = np.zeros(max_steps)
 
 for i in range(max_steps):
     # Compute the gradient
+    # predictions for each value based on B
     Yhat = Xp @ B
     gradient = Xp.T @ (Yhat - Y)
 
@@ -50,12 +50,11 @@ for i in range(max_steps):
     # Figure out the average squared error using the new B
     Yhat = Xp @ B
 
-    # Store it in `errors``
+    # Store it in `errors`
     errors[i] = np.mean((Yhat - Y) ** 2)
 
     # Check to see if we have converged
-    # if past the first iteration and error has started to increase, break out
-    if i > 0 and errors[i] > errors[i - 1]:
+    if np.linalg.norm(gradient) < 10**-3:
         break
 
 print(f"Took {i} iterations to converge")
@@ -65,9 +64,6 @@ print(f"Took {i} iterations to converge")
 B[1:] = B[1:] / std[1:]
 B[0] = B[0] - np.sum(B[1:] * means[1:])
 # print(f"\nFinal B: {B}")
-
-
-# print(errors)
 
 # Show the result
 print(util.format_prediction(B, labels))

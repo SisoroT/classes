@@ -28,14 +28,7 @@ def format_prediction(B, labels):
 # Return the R2 score for coefficients B
 # Given inputs X and outputs Y
 def score(B, X, Y):
-    Yhat = X.dot(B)
-    num = Y - Yhat
-    denom = Y - Y.mean()
-    R2 = 1 - num.dot(num) / denom.dot(denom)
-
+    num = np.sum((Y - X @ B) ** 2)
+    denom = np.sum((Y - Y.mean()) ** 2)
+    R2 = 1 - (num / denom)
     return R2
-
-    # num = (Y - B.mean()) ** 2
-    # denom = (Y - Y.mean()) ** 2
-    # R2 = 1 - (num / denom)
-    # return R2
