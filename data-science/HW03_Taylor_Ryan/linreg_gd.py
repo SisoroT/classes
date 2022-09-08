@@ -12,7 +12,7 @@ if len(sys.argv) != 2:
 # Learning rate
 t = 0.001
 
-# Limit interations
+# Limit iterations
 max_steps = 1000
 
 # Get the arg and read in the spreadsheet
@@ -22,42 +22,46 @@ n, d = X.shape
 print(f"Read {n} rows, {d - 1} features from '{infilename}'.")
 
 # Get the mean and standard deviation for each column
-## Your code here
+means = X.mean(axis=0)
+std = X.std(axis=0)
 
 # Don't mess with the first column (the 1s)
-## Your code here
+means[0] = 0.0
+std[0] = 1.0
 
 # Standardize X to be X'
-Xp = ## Your code here
+Xp = (X - means) / std
 
-# First guess for B is "all coefficents are zero"
-B = ## Your code here
+# First guess for B is "all coefficients are zero"
+B = np.zeros(d)
+# B = np.zeros(Y.size)
 
 # Create a numpy array to record avg error for each step
-errors = ## Your code here
+errors = np.zeros(max_steps)
 
 for i in range(max_steps):
-
     # Compute the gradient
-    ## Your code here
+    Yhat = Xp @ B
+    gradient = Xp.T @ (Yhat - Y)
 
     # Compute a new B (use `t`)
-    ## Your code here
+    B = B - t * gradient
 
     # Figure out the average squared error using the new B
-    ## Your code here
+    Yhat = Xp @ B
 
     # Store it in `errors``
-    ## Your code here
+    errors[i] = np.mean((Yhat - Y) ** 2)
 
     # Check to see if we have converged
-    if ## Your code here:
+    if i > 0 and errors[i] > errors[i - 1]:
         break
 
 print(f"Took {i} iterations to converge")
 
 # "Unstandardize" the coefficients
-## Your code here
+B[1:] = B[1:] / std[1:]
+B[0] = B[0] - np.sum(B[1:] * means[1:])
 
 # Show the result
 print(util.format_prediction(B, labels))
@@ -68,5 +72,9 @@ print(f"R2 = {R2:f}")
 
 # Draw a graph
 fig1 = plt.figure(1, (4.5, 4.5))
-## Your code ehre
+plt.plot(errors[:i], "o-")
+plt.xlabel("Iteration")
+plt.ylabel("Avg Error")
+plt.title("Avg Error vs. Iteration")
+# plt.show()
 fig1.savefig("err.png")
