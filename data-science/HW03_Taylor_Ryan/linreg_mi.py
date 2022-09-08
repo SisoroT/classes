@@ -20,9 +20,8 @@ print(f"Read {n} rows, {d - 1} features from '{infilename}'.")
 # Find the coefficients for the linear regression
 B = np.linalg.inv(X.T @ X) @ X.T @ Y
 
-print(B)
 # Pretty print them
 print(util.format_prediction(B, labels))
 
-# R2 = util.score(B, X, Y)
-# print(f"R2 = {R2:f}")
+R2 = util.score(B, X, Y)
+print(f"R2 = {R2:f}")
