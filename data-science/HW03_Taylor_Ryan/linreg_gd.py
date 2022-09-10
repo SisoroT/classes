@@ -60,10 +60,8 @@ for i in range(max_steps):
 print(f"Took {i} iterations to converge")
 
 # "Unstandardize" the coefficients
-# print(f"\nPrevious B:{B}")
 B[1:] = B[1:] / std[1:]
 B[0] = B[0] - np.sum(B[1:] * means[1:])
-# print(f"\nFinal B: {B}")
 
 # Show the result
 print(util.format_prediction(B, labels))
@@ -78,6 +76,9 @@ plt.title("Convergence")
 plt.xlabel("Iterations")
 plt.ylabel("Mean Squared Error")
 
+plt.xlim(0, 100)
+plt.ylim(0, 10**11)
+
 plt.plot(errors[:i])
-# plt.show()
+plt.show()
 # fig1.savefig("err.png")
