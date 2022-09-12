@@ -77,8 +77,6 @@ plt.xlabel("Iterations")
 plt.ylabel("Mean Squared Error")
 
 plt.xlim(0, 100)
-plt.ylim(0, 10**11)
-
 plt.plot(errors[:i])
-plt.show()
-# fig1.savefig("err.png")
+# plt.show()
+fig1.savefig("err.png")
