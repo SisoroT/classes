@@ -40,21 +40,20 @@ errors = np.zeros(max_steps)
 
 for i in range(max_steps):
     # Compute the gradient
-    # predictions for each value based on B
-    Yhat = Xp @ B
-    gradient = Xp.T @ (Yhat - Y)
+    residuals_inv = Xp @ B - Y
+    gradient = Xp.T @ residuals_inv
 
     # Compute a new B (use `t`)
     B = B - t * gradient
 
     # Figure out the average squared error using the new B
-    Yhat = Xp @ B
+    prediction = Xp @ B
 
     # Store it in `errors`
-    errors[i] = np.mean((Yhat - Y) ** 2)
+    errors[i] = np.mean((prediction - Y) ** 2)
 
     # Check to see if we have converged
-    if np.linalg.norm(gradient) < 10**-3:
+    if np.linalg.norm(gradient) < 10**-2:
         break
 
 print(f"Took {i} iterations to converge")
@@ -71,12 +70,11 @@ R2 = util.score(B, X, Y)
 print(f"R2 = {R2:f}")
 
 # Draw a graph
-fig1 = plt.figure(1, (4.5, 4.5))
-plt.title("Convergence")
-plt.xlabel("Iterations")
-plt.ylabel("Mean Squared Error")
-
-plt.xlim(0, 100)
-plt.plot(errors[:i])
-# plt.show()
-fig1.savefig("err.png")
+fig, ax = plt.subplots(figsize=(4.5, 4.5))
+ax.set_title("Convergence")
+ax.set_xlabel("Iterations")
+ax.set_ylabel("Mean Squared Error")
+ax.set_yscale("log")
+ax.set_xscale("log")
+ax.plot(errors[:i])
+plt.savefig("err.png")
