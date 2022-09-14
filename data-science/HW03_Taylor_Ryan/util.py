@@ -20,7 +20,11 @@ def read_excel_data(infilename):
 
 # Make it pretty
 def format_prediction(B, labels):
-    pred_string = f"${B[0]:,.2f} + (${B[1]:,.2f} x {labels[1]}) + (${B[2]:,.2f} x {labels[2]}) + (${B[3]:,.2f} x {labels[3]}) + (${B[4]:,.2f} x {labels[4]}) + (${B[5]:,.2f} x {labels[5]})"
+    pred_string = f"${B[0]:,.2f}"
+    for i in range(1, len(labels)):
+        b = B[i]
+        label = labels[i]
+        pred_string += f" + (${b:,.2f} x {label})"
 
     return pred_string
 
@@ -28,7 +32,15 @@ def format_prediction(B, labels):
 # Return the R2 score for coefficients B
 # Given inputs X and outputs Y
 def score(B, X, Y):
-    num = np.sum((Y - X @ B) ** 2)
-    denom = np.sum((Y - Y.mean()) ** 2)
-    R2 = 1 - (num / denom)
+    # matrix multiplication to find predicted Y
+    predicitons = X @ B
+    # calculate residuals matrix for predictions
+    residuals_for_pred = Y - predicitons
+    # calculate residuals matrix for mean
+    residuals_for_mean = Y - np.mean(Y)
+    # sum up residual matrices
+    numer = np.sum((residuals_for_pred) ** 2)
+    denom = np.sum((residuals_for_mean) ** 2)
+    # calculate and return R2 score
+    R2 = 1 - (numer / denom)
     return R2
