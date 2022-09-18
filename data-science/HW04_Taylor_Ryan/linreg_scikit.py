@@ -45,7 +45,7 @@ plt.savefig("res_hist.png")
 
 # Do a Kolmogorov-Smirnov to see if the residual is normally
 # distributed
-ks_stat, p_value = kstest(residual, "norm")
+ks_stat, p_value = kstest(residual, norm.cdf)
 print(f"Kolmogorov-Smirnov: P-value = {p_value}")
 
 
