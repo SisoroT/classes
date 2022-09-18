@@ -33,20 +33,20 @@ residual = Y - lin_reg.predict(X)
 
 # Make a histogram of the residual and save as "res_hist.png"
 fig, ax = plt.subplots()
-ax.hist(residual, bins=20)
+ax.hist(residual, bins=18)
 ax.set_title("Residual Histogram")
 ax.set_xlabel("Residual")
 ax.set_ylabel("Density")
 # format x axis to use K's instead of just thousands
-xlabels = ["${:.0f}K".format(x) for x in ax.get_xticks() / 1000]
+xlabels = [f"${x:.0f}K" for x in ax.get_xticks() / 1000]
 ax.set_xticklabels(xlabels)
-plt.show()
-# plt.savefig("res_hist.png")
+# plt.show()
+plt.savefig("res_hist.png")
 
 # Do a Kolmogorov-Smirnov to see if the residual is normally
 # distributed
 ks_stat, p_value = kstest(residual, "norm")
-print(f"Kolmogorov-Smirnov: {ks_stat:.3f}, P-value: {p_value}")
+print(f"Kolmogorov-Smirnov: P-value = {p_value}")
 
 
 # Calculate the standard deviation
