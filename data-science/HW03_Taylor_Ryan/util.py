@@ -33,14 +33,14 @@ def format_prediction(B, labels):
 # Given inputs X and outputs Y
 def score(B, X, Y):
     # matrix multiplication to find predicted Y
-    predicitons = X @ B
+    predictions = X @ B
     # calculate residuals matrix for predictions
-    residuals_for_pred = Y - predicitons
+    residuals_for_pred = Y - predictions
     # calculate residuals matrix for mean
     residuals_for_mean = Y - np.mean(Y)
     # sum up residual matrices
-    numer = np.sum((residuals_for_pred) ** 2)
+    nume = np.sum((residuals_for_pred) ** 2)
     denom = np.sum((residuals_for_mean) ** 2)
     # calculate and return R2 score
-    R2 = 1 - (numer / denom)
+    R2 = 1 - (nume / denom)
     return R2
