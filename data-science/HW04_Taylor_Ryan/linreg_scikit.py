@@ -16,8 +16,8 @@ infilename = sys.argv[1]
 # Read the spreadsheet
 X, Y, labels = util.read_excel_data(infilename)
 
-n, d = X.shape
-print(f"Read {n} rows, {d-1} features from '{infilename}'.")
+rows, cols = X.shape
+print(f"Read {rows} rows, {cols-1} features from '{infilename}'.")
 
 # Don't need the intercept added -- X has column of 1s
 lin_reg = LinearRegression(fit_intercept=False)
@@ -37,10 +37,10 @@ ax.hist(residual, bins=18)
 ax.set_title("Residual Histogram")
 ax.set_xlabel("Residual")
 ax.set_ylabel("Density")
+
 # format x axis to use K's instead of just thousands
-xlabels = [f"${x:.0f}K" for x in ax.get_xticks() / 1000]
-ax.set_xticklabels(xlabels)
-# plt.show()
+ax.xaxis.set_major_formatter(lambda x, pos: f"${x/1000:.0f}K")
+
 plt.savefig("res_hist.png")
 
 # Do a Kolmogorov-Smirnov to see if the residual is normally
@@ -50,7 +50,9 @@ print(f"Kolmogorov-Smirnov: P-value = {p_value}")
 
 
 # Calculate the standard deviation
-standard_deviation = np.std(residual)
+variance = residual @ residual / (rows - cols - 1)
+standard_deviation = np.sqrt(variance)
+# standard_deviation = np.std(residual)
 
 print(
     f"68% of predictions with this formula will be within ${standard_deviation:,.02f} of the actual price."
