@@ -16,16 +16,18 @@ outfilename = sys.argv[4]
 sum_ub = num_dice * num_sides + 1
 sum_lb = num_dice
 
+
 # Pretty print the lookup table
 def show_odds(odds):
     global sum_lb, sum_ub
-    print('\n*** Lookup Table ***')
+    print("\n*** Lookup Table ***")
     for i in range(sum_lb, sum_ub):
         print(f"\tGiven d={i}:")
         print(f"\t\t", end="")
-        for j in ['H','E','L']:
+        for j in ["H", "E", "L"]:
             print(f"P({j})={odds[j][i]:.5f} ", end="")
         print()
+
 
 # Pretty print entries of 'array'
 def show_array(label, array):
@@ -35,32 +37,46 @@ def show_array(label, array):
         print(f"{i}:{array[i]:.4f} ", end="")
     print()
 
+
 # You will need a recursive function here to fill the how_many_ways array
 # how_many_ways[8] holds number of ways n dice (each with m sides) make the number 8
-def fill_how_many_ways
-    ## Your code here
+# TODO: make this function recursive
+def fill_how_many_ways(arr):
+    # Fill the array
+    for i in range(1, num_sides + 1):
+        arr[i] = 1
+
+    for _ in range(2, num_dice + 1):
+        for j in range(sum_ub - 1, 0, -1):
+            arr[j] = sum(arr[j - k] for k in range(1, num_sides + 1) if j - k > 0)
+    return arr
+
 
 print("*** Dice ***")
 how_many_ways = np.zeros(sum_ub)
-fill_how_many_ways( ## Your code here
-show_array('How many ways', how_many_ways)
+fill_how_many_ways(how_many_ways)
+show_array("How many ways", how_many_ways)
 
 # What is the probability of getting a sum of n when you roll the dice?
-priors = ## Your code here
-show_array('Priors', priors)
+priors = how_many_ways / sum(how_many_ways)
+show_array("Priors", priors)
 
 # Create a lookup table
 # Example: odds['H'][8] holds the probability of an 'H' given the original sum is 8
-odds = {'H': np.zeros(sum_ub), 'E': np.zeros(sum_ub), 'L': np.zeros(sum_ub)}
+odds = {"H": np.zeros(sum_ub), "E": np.zeros(sum_ub), "L": np.zeros(sum_ub)}
 
 # Fill in the lookup table
-## Your code here
+# TODO: review this code to see if you can improve it with numpy
+for i in range(sum_lb, sum_ub):
+    odds["H"][i] = sum(priors[j] for j in range(i + 1, sum_ub))
+    odds["E"][i] = priors[i]
+    odds["L"][i] = sum(priors[j] for j in range(sum_lb, i))
 
-# Show the lookup table
+# # Show the lookup table
 show_odds(odds)
 
 # Open the output file
-outfile = open(outfilename,'w')
+outfile = open(outfilename, "w")
 
 # Write the header
 outfile.write("input,")
@@ -69,42 +85,44 @@ for i in range(sum_lb, sum_ub):
 outfile.write("guess\n")
 
 # Open the input file
-with open(infilename, 'r') as f:
+with open(infilename, "r") as f:
 
     # Step through each line in the input file
     for row in f.readlines():
 
         # Remove newline
-        row = row.strip()
+        seq = row.strip()
 
         # Shorten long inputs to just 7 characters
-        if len(row) <= 7:
-            out_row = row
+        if len(seq) <= 7:
+            out_row = seq
         else:
-            out_row = row[:4] + "..."
+            out_row = seq[:4] + "..."
 
         # Is this an empty line?
-        if len(row) == 0:
+        if len(seq) == 0:
             continue
 
-        # print(f"\n*** Input:\"{row}\" ***")
+        print(f'\n*** Input:"{seq}" ***')
 
         # Compute the likelihoods
-        # Example: likelihoods[9] holds the probability of 'row' given the original sum is 9
-
-        ## Your code here
-        likelihoods =
-        # show_array("Likelihoods", likelihoods)
+        # Example: likelihoods[9] holds the probability of 'seq' given the original sum is 9
+        likelihoods = (
+            odds["H"] ** seq.count("H")
+            * odds["E"] ** seq.count("E")
+            * odds["L"] ** seq.count("L")
+        )
+        show_array("Likelihoods", likelihoods)
 
         # Bayes rule: the posterior is proportional to the likelihood times the prior
-        unnormalized_posteriors = ## Your code here
-        # show_array("Unnormalized posteriors", unnormalized_posteriors)
+        unnormalized_posteriors = likelihoods * priors
+        show_array("Unnormalized posteriors", unnormalized_posteriors)
 
         # But they don't sum to 1.0, so we need scale them so they do
-        marginal_likelihood = ## Your code here
-        # print(f"\tP({row}) = {marginal_probability:.7f}")
-        normalized_posteriors = ## Your code herer
-        # show_array("Normalized posteriors", normalized_posteriors)
+        marginal_likelihood = sum(unnormalized_posteriors)
+        print(f"\tP({row}) = {marginal_likelihood:.7f}")
+        normalized_posteriors = unnormalized_posteriors / marginal_likelihood
+        show_array("Normalized posteriors", normalized_posteriors)
 
         # Write them out
         outfile.write(f"{out_row},")
@@ -112,7 +130,7 @@ with open(infilename, 'r') as f:
             outfile.write(f"{normalized_posteriors[i]:.5f},")
 
         # Which is the most likely explanation?
-        best = ## Your code here
+        best = np.argmax(normalized_posteriors)
         outfile.write(f"{best}\n")
 
 # Close the output file
