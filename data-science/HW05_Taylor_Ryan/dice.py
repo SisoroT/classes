@@ -1,3 +1,4 @@
+import itertools
 import numpy as np
 import sys
 
@@ -40,15 +41,9 @@ def show_array(label, array):
 
 # You will need a recursive function here to fill the how_many_ways array
 # how_many_ways[8] holds number of ways n dice (each with m sides) make the number 8
-# TODO: make this function recursive
 def fill_how_many_ways(arr):
-    # Fill the array
-    for i in range(1, num_sides + 1):
-        arr[i] = 1
-
-    for _ in range(2, num_dice + 1):
-        for j in range(sum_ub - 1, 0, -1):
-            arr[j] = sum(arr[j - k] for k in range(1, num_sides + 1) if j - k > 0)
+    for rolls in itertools.product(range(1, num_sides + 1), repeat=num_dice):
+        arr[sum(rolls)] += 1
     return arr
 
 
@@ -66,13 +61,12 @@ show_array("Priors", priors)
 odds = {"H": np.zeros(sum_ub), "E": np.zeros(sum_ub), "L": np.zeros(sum_ub)}
 
 # Fill in the lookup table
-# TODO: review this code to see if you can improve it with numpy
-for i in range(sum_lb, sum_ub):
-    odds["H"][i] = sum(priors[j] for j in range(i + 1, sum_ub))
-    odds["E"][i] = priors[i]
-    odds["L"][i] = sum(priors[j] for j in range(sum_lb, i))
+# calculate the odds of each outcome given the sum
+odds["L"] = np.cumsum(priors) - priors
+odds["E"] = priors
+odds["H"] = np.cumsum(priors[::-1])[::-1] - priors
 
-# # Show the lookup table
+# Show the lookup table
 show_odds(odds)
 
 # Open the output file
