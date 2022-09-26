@@ -41,10 +41,9 @@ def show_array(label, array):
 
 # You will need a recursive function here to fill the how_many_ways array
 # how_many_ways[8] holds number of ways n dice (each with m sides) make the number 8
-def fill_how_many_ways(arr):
+def fill_how_many_ways(how_many_ways):
     for rolls in itertools.product(range(1, num_sides + 1), repeat=num_dice):
-        arr[sum(rolls)] += 1
-    return arr
+        how_many_ways[sum(rolls)] += 1
 
 
 print("*** Dice ***")
