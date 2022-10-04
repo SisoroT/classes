@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import PolynomialFeatures
 from scipy.stats import pearsonr
 from sklearn.linear_model import LinearRegression
@@ -20,6 +19,9 @@ Y = df.values[:, -1]
 
 # Expand to a 2-degree polynomials
 poly = PolynomialFeatures(2)
+X = poly.fit_transform(X_basic)
+labels = poly.get_feature_names(labels_basic)
+rows, cols = X.shape
 
 # Prepare for loop
 residual = Y
@@ -28,36 +30,45 @@ residual = Y
 # include the intercept
 feature_indices = [0]
 
+model = LinearRegression()
+print("First time through: using original price data as the residual")
+
 while len(feature_indices) < 3:
-    p_values = []
+    p_vals = []
 
-    # Calculate the p-value of the Pearson correlation between each input and the current residual
-    for i in range(len(X_basic[0])):
-        p_values.append(pearsonr(X_basic[:, i], residual)[1])
-        print(f"\t{df.columns[i]} vs residual: p-value={p_values[i]}")
+    # Calculate the p-value of the Pearson correlation
+    # between each input and the current residual
+    for i in range(1, cols):
+        p_vals.append((pearsonr(X[:, i], residual)[1], i))
 
-    p_values = np.array(p_values)
+    # Sort p-values in ascending order
+    sorted_p_vals = sorted(p_vals)
 
-    # Sort the inputs so that the p-values are in ascending order
-    sorted_indices = np.argsort(p_values)
+    for i in range(cols - 1):
+        p_value, idx = sorted_p_vals[i]
+        print(f'\t"{labels[idx]}" vs residual: p-value={p_value}')
 
-    # Add the input with the lowest p-value to the list of inputs you are going to actually use
-    feature_indices.append(sorted_indices[0])
-    X = X_basic[:, feature_indices]
+    # Add the input with the lowest p-value to the list of
+    # inputs you are going to actually use
+    best_idx = sorted_p_vals[0][1]
+    feature_indices.append(best_idx)
 
-    # create list of features in use
-    features = df.columns[feature_indices].to_list()
+    # List off the attributes we will use to create the next residual
+    print("**** Fitting with [", end="")
+    for idx in feature_indices:
+        print(f'"{labels[idx]}" ', end="")
+    print("] ****")
 
-    # Do linear regression using that list of inputs
-    print(f'**** Fitting with ["{feature_indices[1:]}" "{features[1:]}"] ****')
-    model = LinearRegression()
-    model.fit(X, Y)
+    # Fit the model with the current set of inputs
+    sub_X = X[:, feature_indices]
+    model.fit(sub_X, Y)
 
-    # Print the R2 value
-    print(f"R2: {model.score(X, Y)}")
-    # Calculate a new residual
-    residual = Y - model.predict(X)
-    print("Residual is updated\n")
+    # Print the R2 score
+    print(f"R2: {model.score(sub_X, Y)}")
+
+    # Update the residual for the next time
+    print("Residual is updated")
+    residual = Y - model.predict(sub_X)
 
 # Any relationship between the final residual and the unused variables?
 print("Making scatter plot: age_of_roof vs final residual")
