@@ -9,22 +9,38 @@ import logging
 
 # Configure logger
 ## Your code here
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+    "%(levelname)s@%(asctime)s: %(message)s", datefmt="%H:%M:%S"
+)
 
 # Read in test data
 ## Your code here
+df = pd.read_csv("test.csv")
+X_basic = df.values[:, :-1]
+Y = df.values[:, -1]
 
 # Read in model
 ## Your code here
+with open("classifier.pkl", "rb") as f:
+    model = pickle.load(f)
 
 # Scale X
 ## Your code here
+scaler = StandardScaler()
+X = scaler.fit_transform(X_basic)
 
 # Check accuracy on test data
 ## Your code here
+test_accuracy = model.score(X, Y)
 print(f"Test Accuracy = {test_accuracy}")
 
 # Show confusion matrix
 ## Your code here
+pred = model.predict(X)
+cm = confusion_matrix(Y, pred)
 print(f"Confusion matrix = \n{cm}")
 
 # Try a bunch of thresholds
@@ -37,6 +53,10 @@ f1_scores = []
 while threshold <= 1.0:
     thresholds.append(threshold)
     ## Your code here
+    pred = model.predict_proba(X)[:, 1] > threshold
+    recall = recall_score(Y, pred)
+    precision = precision_score(Y, pred)
+    f1 = 2 * (precision * recall) / (precision + recall)
 
     recall_scores.append(recall)
     precision_scores.append(precision)
@@ -48,6 +68,10 @@ while threshold <= 1.0:
 
 # Make a confusion matrix for the best threshold
 ## Your code here
+best_threshold = thresholds[np.argmax(f1_scores)]
+pred = model.predict_proba(X)[:, 1] > best_threshold
+cm = confusion_matrix(Y, pred)
+print(f"Confusion matrix = \n{cm}")
 
 # Plot recall, precision, and F1 vs Threshold
 fig, ax = plt.subplots()
