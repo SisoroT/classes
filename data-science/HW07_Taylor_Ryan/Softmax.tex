@@ -1,0 +1,42 @@
+\documentclass[11pt,english]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fullpage}
+\usepackage[showframe=false,margin=1in]{geometry}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{url}
+\usepackage{fancyvrb}
+
+\usepackage{graphicx}
+\usepackage{listings}
+
+\parindent=0pt
+\setlength{\parskip}{1em}
+\lstset{
+  basicstyle=\fontsize{10}{13}\selectfont\ttfamily
+}
+
+
+\begin{document}
+
+\title{CSC 4780/6780 \\
+Fall 2022\\ Homework 07 - Softmax}
+\author{Ryan Taylor \\ rtaylor80@student.gsu.edu}
+\maketitle
+
+\section{Question}
+
+What is the softmax of the vector [$\begin{array}{cccc} 5 & 3 & 0 & -1 \end{array}$]? (Hint: the answer is also a vector.)
+
+\section{Answer}
+
+The softmax of [$\begin{array}{cccc} 5 & 3 & 0 & -1 \end{array}$] is [$\begin{array}{cccc} 0.87370431 & 0.11824302 & 0.00588697 & 0.0021657 \end{array}$] \\
+by following the formula:
+
+$\sigma(z_i) = \frac{e^{z_{i}}}{\sum_{j=1}^K e^{z_{j}}} \ \ \ for\ i=1,2,\dots,K$
+
+\end{document}
