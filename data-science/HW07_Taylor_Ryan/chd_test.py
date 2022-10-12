@@ -19,7 +19,7 @@ logger.addHandler(handler)
 
 # Read in test data
 df = pd.read_csv("test.csv")
-X_basic = df.values[:, :-1]
+X = df.values[:, :-1]
 Y = df.values[:, -1]
 
 # Read in model
@@ -27,14 +27,14 @@ with open("classifier.pkl", "rb") as f:
     scaler, logreg = pickle.load(f)
 
 # Scale X
-X = scaler.fit_transform(X_basic)
+X_scaled = scaler.transform(X)
 
 # Check accuracy on test data
-test_accuracy = logreg.score(X, Y)
+test_accuracy = logreg.score(X_scaled, Y)
 print(f"Test Accuracy = {test_accuracy}")
 
 # Show confusion matrix
-pred = logreg.predict(X)
+pred = logreg.predict(X_scaled)
 cm = confusion_matrix(Y, pred)
 print(f"Confusion matrix = \n{cm}")
 
@@ -46,31 +46,36 @@ recall_scores = []
 precision_scores = []
 f1_scores = []
 best_threshold = 0.0
+
 while threshold <= 1.0:
     thresholds.append(threshold)
-    pred = logreg.predict_proba(X)[:, 1] > threshold
-    accuracy = logreg.score(X, pred)
+    pred = logreg.predict_proba(X_scaled)[:, 1] > threshold
+
+    # calculate metrics
+    accuracy = logreg.score(X_scaled, pred)
     recall = recall_score(Y, pred)
     precision = precision_score(Y, pred, zero_division=1)
     f1 = 2 * (precision * recall) / (precision + recall)
 
+    # add metrics to lists
+    recall_scores.append(recall)
+    precision_scores.append(precision)
+    f1_scores.append(f1)
+
+    # update best f1 score
     if f1 > best_f1:
         best_f1 = f1
         best_threshold = threshold
 
-    recall_scores.append(recall)
-    precision_scores.append(precision)
-    f1_scores.append(f1)
     logger.info(
         f"Threshold={threshold:.3f} Accuracy={accuracy:.3f} Recall={recall:.2f} Precision={precision:.2f} F1 = {f1:.3f}"
     )
     threshold += 0.02
 
 # Make a confusion matrix for the best threshold
-pred = logreg.predict_proba(X)[:, 1] > best_threshold
+pred = logreg.predict_proba(X_scaled)[:, 1] > best_threshold
 cm = confusion_matrix(Y, pred)
-print(f"\nBest threshold = {best_threshold:.3f}")
-print(f"Confusion matrix = \n{cm}")
+print(f"Confusion matrix with {best_threshold:.3f} threshold: \n{cm}")
 
 
 # Plot recall, precision, and F1 vs Threshold
