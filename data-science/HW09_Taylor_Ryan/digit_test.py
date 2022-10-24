@@ -16,18 +16,23 @@ with open("knn_model.pkl", "rb") as f:
 
 start = perf_counter()
 # Make predictions for the test data
-## Your code here
+y_pred = classifier.predict(X_test)
 print(f"Inference: elapsed time = {perf_counter() - start:.2f} seconds")
 
 # Show accuracy
-## Your code here
+print(f"Accuracy on test data = {accuracy_score(y_test, y_pred)*100:.1f}%")
 
-# Create a =onfusion matrix
-## Your code here
+# Create a confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+print(f"Confusion:\n{cm}")
 
 # Make a display
 fig, ax = plt.subplots()
 ax.set_title("MNIST Confusion Matrix")
-## Your code here
+conf_matrix = ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=range(10),
+)
+conf_matrix.plot(ax=ax, cmap="Blues")
 fig.savefig("sk_confusion.png")
 print("Wrote sk_confusion.png")
