@@ -1,3 +1,0 @@
-hadoop spark hadoop
-spark pig hive hbase
-pig spark hadoop hadoop
