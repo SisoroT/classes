@@ -1,0 +1,24 @@
+ExtraTreesRegressor:
+	Inference: 0.0167 seconds
+	R2 on test data = 0.8929
+DecisionTreeRegressor:
+	Inference: 0.0041 seconds
+	R2 on test data = 0.7965
+GradientBoostingRegressor:
+	Inference: 0.0042 seconds
+	R2 on test data = 0.9125
+RandomForestRegressor:
+	Inference: 0.0149 seconds
+	R2 on test data = 0.8870
+MLPRegressor:
+	Inference: 0.0058 seconds
+	R2 on test data = 0.8008
+LGBMRegressor:
+	Inference: 0.0084 seconds
+	R2 on test data = 0.9121
+
+--------------------------------------------------------
+If accuracy was most important, I would use GradientBoostingRegressor.
+
+If speed was also important, I would still use GradientBoostingRegressor since
+it is the second fastest and doesn't sacrifice as much accuracy as the DecisionTreeRegressor.

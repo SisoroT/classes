@@ -1,0 +1,79 @@
+\documentclass[11pt,english]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fullpage}
+\usepackage[showframe=false,margin=1in]{geometry}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{url}
+\usepackage{fancyvrb}
+
+\usepackage{graphicx}
+\usepackage{listings}
+
+\parindent=0pt
+\setlength{\parskip}{1em}
+\lstset{
+  basicstyle=\fontsize{10}{13}\selectfont\ttfamily
+}
+
+
+\begin{document}
+
+\title{CSC 4780 \\
+Fall 2022\\ Homework 10 - Mice Analysis}
+\author{Ryan Taylor \\ rtaylor80@student.gsu.edu}
+\maketitle
+
+\section{Contingency Table}
+
+\begin{tabular}{l|rr|r}
+ Gene & No Cancer & Has Cancer & Total \\
+\hline
+ J   &  93 & 37 & 130 \\
+ K   &  34 &  5 &  39 \\
+ R   &  20 &  1 &  21 \\
+ \hline
+     & 147 & 43 & 190 \\
+\end{tabular}
+
+\section{Conditional Proportions}
+
+\begin{tabular}{l|rr|r}
+ Gene & No Cancer & Has Cancer & Total \\
+\hline
+ J   & 71.54\% & 28.46\% & 130  \\
+ K   & 87.18\% & 12.82\% &  39  \\
+ R   & 95.24\% &  4.76\% &  21  \\
+ \hline
+     & 77.37\% & 22.63\% & 190  \\
+\end{tabular}
+
+\section{Expected counts if the gene and cancer were independent}
+
+\begin{tabular}{l|rr|r}
+ Gene & No Cancer & Has Cancer & Total \\
+\hline
+ J   & 100.6 & 29.4 & 130 \\
+ K   & 30.17  &  8.8 &  39 \\
+ R   & 16.3  &  4.8 &  21 \\
+ \hline
+     & 147    & 43    & 190 \\
+\end{tabular}
+
+\section{Chi-Squared}
+$X^2$ = 8.497206532327557
+
+\section{Degrees of Freedom}
+Degrees of Freedom = 2
+
+\section{P-Value}
+p = 0.014284171167428195
+
+\section{Conclusion}
+Since the p-value is less than 0.05, it can be concluded that the gene and cancer are likely not independent.
+
+\end{document}

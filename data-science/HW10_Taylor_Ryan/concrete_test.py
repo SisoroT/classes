@@ -5,15 +5,15 @@ from time import perf_counter
 import glob
 import os
 
-# Read in testing data (none of the colums are an index)
-## Your code here
+# Read in testing data (none of the columns are an index)
+test_df = pd.read_csv("test_concrete.csv", index_col=False)
 
 # Break into two dataframes
-X_test = ## Your code here
-y_test = ## Your code here
+X_test = test_df.drop(columns=["csMPa"])
+y_test = test_df["csMPa"]
 
 # Get a list of all the pkl files in the current directory
-## Your code here
+model_files = glob.glob("*.pkl")
 
 # Hack off the .pkl extension
 model_names = [os.path.splitext(p)[0] for p in model_files]
@@ -22,15 +22,15 @@ model_names = [os.path.splitext(p)[0] for p in model_files]
 for model_name in model_names:
 
     # Load the model
-    model = ## Your code here
+    model = carreg.load_model(model_name, verbose=False)
 
     # Do the inference
     t1 = perf_counter()
-    y_pred = ## Your code here
+    y_pred = model.predict(X_test)
     t2 = perf_counter()
 
     # Get the R2 score
-    r2 = ## Your code here
+    r2 = r2_score(y_test, y_pred)
 
     # Print the results
     print(f"{model_name}:")
