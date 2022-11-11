@@ -1,0 +1,24 @@
+Model parameters:
+	fc1.weight:[256, 784]
+	fc1.bias:[256]
+	fc2.weight:[128, 256]
+	fc2.bias:[128]
+	fc3.weight:[64, 128]
+	fc3.bias:[64]
+	fc4.weight:[10, 64]
+	fc4.bias:[10]
+Total parameters: 242,762
+Training:
+   0: loss: 1.697072,  accuracy: 75.00%
+  50: loss: 1.525842,  accuracy: 94.00%
+ 100: loss: 1.542699,  accuracy: 92.00%
+ 150: loss: 1.538715,  accuracy: 92.00%
+ 200: loss: 1.523229,  accuracy: 94.00%
+ 250: loss: 1.511751,  accuracy: 95.00%
+ 300: loss: 1.511267,  accuracy: 95.00%
+ 350: loss: 1.511157,  accuracy: 95.00%
+ 400: loss: 1.480841,  accuracy: 98.00%
+ 450: loss: 1.541151,  accuracy: 92.00%
+ 500: loss: 1.521149,  accuracy: 94.00%
+Training took 578.34 seconds
+Wrote weights.pt
