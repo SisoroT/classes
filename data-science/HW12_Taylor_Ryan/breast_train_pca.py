@@ -13,40 +13,44 @@ k = 11
 
 # Read in the data
 df = pd.read_csv("train_breast.csv", index_col="id")
-X_train = ## Your code here
-y_train = ## Your code here
+X_train = df.drop("diagnosis", axis=1)
+y_train = df["diagnosis"]
 print(f"X shape = {X_train.shape}, y shape={y_train.shape}")
 n = len(df)
 
 # Scale it
-## Your code here
-X_train_scaled = ## Your code here
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
 
 # Get the covariance matrix
-C = ## Your code here
+C = np.cov(X_train_scaled.T)
 
 # Do singular value decomposition
-## Your code here
-W = ## Your code here
+U, S, V = svd(C)
+W = U[:, :k]
 
 # Reduce the data to k dimensions
-X_train_scaled = ## Your code here
+X_train_scaled = X_train_scaled @ W
 
 # Do a grid search for hyperparameters
-parameters = ## Your code here
-classifier = ## Your code here
-## Your code here
+parameters = {
+    "C": [0.5, 1.0, 2.0, 3.0, 4.0],
+    "kernel": ["linear", "rbf", "poly", "sigmoid"],
+}
+classifier = SVC()
+grid_search = GridSearchCV(estimator=classifier, param_grid=parameters, cv=5)
+grid_search.fit(X_train_scaled, y_train)
 
 # What were the best parameters?
-svc_params = ## Your code here
+svc_params = grid_search.best_params_
 print(f"Best parameters = {svc_params}")
 
 # Make a classifier using the best parameters
-svc_classifier = ## Your code here
+svc_classifier = SVC(**svc_params)
 
 t0 = perf_counter()
 # Fit the classifier with all the training dta
-## Your code here
+svc_classifier.fit(X_train_scaled, y_train)
 print(
     f"Fitting took {perf_counter() - t0:.6f} seconds with d={X_train_scaled.shape[1]} input."
 )
@@ -58,12 +62,12 @@ with open("pca_classifier.pkl", "wb") as f:
     pickle.dump(svc_classifier, f)
 
 # Do predictions for the training data
-y_pred = ## Your code here
+y_pred = svc_classifier.predict(X_train_scaled)
 
 # Show the accuracy for the training data
-accuracy = ## Your code here
+accuracy = accuracy_score(y_train, y_pred)
 print(f"Accuracy on training data = {accuracy * 100.0:.2f}%")
 
 # Make a confusion matrix
-cm = ## Your code here
+cm = confusion_matrix(y_train, y_pred)
 print(f"Confusion on training data: \n{cm}")
