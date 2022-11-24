@@ -16,6 +16,7 @@ spark = SparkSession.builder.appName("Iris Data").getOrCreate()
 # loading IRIS dataset
 dataset = spark.read.format("csv").option("header", "true").load("Iris.csv")
 
+# displaying the dataset up to 20 records
 dataset.show(20)
 
 # required vector transformation to get a dependent column based on independent columns
@@ -30,7 +31,7 @@ dataset = dataset.withColumn(
 )
 dataset = dataset.withColumn("PetalWidthCm", dataset["PetalWidthCm"].cast(DoubleType()))
 
-# displaying the dataset upto 20 records
+# displaying the dataset up to 20 records
 dataset.show(20)
 
 # Assigning the set of columns as input (required features)
@@ -42,12 +43,11 @@ vectorAssembler = VectorAssembler(inputCols=required_features, outputCol="featur
 dataset2 = vectorAssembler.transform(dataset)
 dataset2.show(20)
 
-# So, as we got the feature column , we can drop the independent colums (un necessary now)
+# So, as we got the feature column , we can drop the independent columns (unnecessary now)
 df = dataset2.drop("SepalLengthCm", "SepalWidthCm", "PetalLengthCm", "PetalWidthCm")
 df.show(3)
 
-# converting text to index value using stringindexer
-# (like 0 or 1)
+# converting text to index value using stringindexer (like 0 or 1)
 dataset3 = StringIndexer(inputCol="Species", outputCol="Group")
 
 # Updated values is now set to our current dataset and transformed to binary data
