@@ -5,38 +5,41 @@ import numpy as np
 import arviz as az
 
 # Read in the data
-df = ## Your code here
-n = ## Your code here
+df = pd.read_csv("samples.csv")
+n = len(df)
+
+# Convert the timestamp to a datetime object
+df["timestamp"] = pd.to_datetime(df["timestamp"])
 
 # When is low tide?
-starttime = ## Your code here
+starttime = df["timestamp"][0]
 
 # Make seconds from lowtide using timestamps
-seconds = ## Your code here
+seconds = (df["timestamp"] - starttime).dt.total_seconds()
 
 # Get the fish counts as a numpy array
-fish_counts = ## Your code here
+fish_counts = df["jellyfish_entering"].values
 
 # How many seconds between lowtides?
 period = 12.0 * 60.0 * 60.0
 
 # Create a model
-basic_model = ## Your code here
+basic_model = pm.Model()
 with basic_model:
 
     # Give priors for unknown model parameters
-    magnitude = ## Your code here
-    sigma = ## Your code here
+    magnitude = pm.Uniform("magnitude", lower=0, upper=200)
+    sigma = pm.HalfNormal("sigma", sigma=12)
 
     # Create the model
-    ## Your code here
+    mu = magnitude * np.sin(2 * np.pi * seconds / period)
 
     # Make chains
-    trace = ## Your code here
+    trace = pm.sample(2000, tune=500)
 
     # Find maximum a posteriori estimations
-    map_magnitude = ## Your code here
-    map_sigma = ## Your code here
+    map_magnitude = pm.find_MAP(model=basic_model)["magnitude"]
+    map_sigma = pm.find_MAP(model=basic_model)["sigma"]
 
 # Let the user know the MAP values
 print(f"Based on these {n} measurements, the most likely explanation:")
@@ -47,10 +50,25 @@ print(f"\tExpected residual? Normal with mean 0 and std of {map_sigma:.2f} jelly
 
 # Do a contour/density plot
 fig, ax = plt.subplots(1, 1, figsize=(7, 7))
-## Your code here
+posterior = trace["posterior"]
+p_magnitude = posterior["magnitude"]
+p_sigma = posterior["sigma"]
+ax = az.plot_kde(
+    p_magnitude,
+    p_sigma,
+    contourf_kwargs={"cmap": "Blues"},
+)
+ax.set_xlabel("magnitude")
+ax.set_ylabel("$\sigma$")
+ax.set_title("Posterior density of magnitude and $\sigma$")
 fig.savefig("pdf.png")
 
 # Plot your function and confidence against the observed data
 fig, ax = plt.subplots(figsize=(8, 6))
-## Your code here
+ax.plot(seconds, mu, "r", label="Model")
+ax.plot(seconds, fish_counts, "o", label="Observed")
+ax.set_xlabel("Hours since low tide")
+ax.set_ylabel("Jellyfish entering bay over 15 minutes")
+ax.set_title("Model fit")
+ax.legend()
 fig.savefig("jellyfish.png")
