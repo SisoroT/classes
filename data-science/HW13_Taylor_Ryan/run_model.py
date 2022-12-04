@@ -33,13 +33,14 @@ with basic_model:
 
     # Create the model
     mu = magnitude * np.sin(2 * np.pi * seconds / period)
+    likelihood = pm.Normal("likelihood", mu=mu, sigma=sigma, observed=fish_counts)
 
     # Make chains
     trace = pm.sample(2000, tune=500)
 
     # Find maximum a posteriori estimations
-    map_magnitude = pm.find_MAP(model=basic_model)["magnitude"]
-    map_sigma = pm.find_MAP(model=basic_model)["sigma"]
+    map_magnitude = pm.find_MAP()["magnitude"]
+    map_sigma = pm.find_MAP()["sigma"]
 
 # Let the user know the MAP values
 print(f"Based on these {n} measurements, the most likely explanation:")
@@ -61,14 +62,48 @@ ax = az.plot_kde(
 ax.set_xlabel("magnitude")
 ax.set_ylabel("$\sigma$")
 ax.set_title("Posterior density of magnitude and $\sigma$")
+
+ax.vlines(
+    map_magnitude,
+    map_sigma - 4,
+    map_sigma + 4,
+    linestyle="dashed",
+    color="k",
+)
+ax.hlines(
+    map_sigma,
+    map_magnitude - 10,
+    map_magnitude + 10,
+    linestyle="dashed",
+    color="k",
+)
+
 fig.savefig("pdf.png")
 
 # Plot your function and confidence against the observed data
 fig, ax = plt.subplots(figsize=(8, 6))
-ax.plot(seconds, mu, "r", label="Model")
-ax.plot(seconds, fish_counts, "o", label="Observed")
+hours = seconds / 3600
+# observed data
+ax.plot(
+    hours,
+    fish_counts,
+    "k+",
+    label="observed",
+)
+# predictions
+model = map_magnitude * np.sin(2 * np.pi * seconds / period)
+ax.plot(
+    hours,
+    model,
+    "r--",
+    lw="0.5",
+    label="prediction",
+)
 ax.set_xlabel("Hours since low tide")
 ax.set_ylabel("Jellyfish entering bay over 15 minutes")
-ax.set_title("Model fit")
+ax.set_title("Model fit to jellyfish data")
+# Plot the 95% confidence interval
+ax.plot(hours, model + 2 * map_sigma, "g--", lw="0.5", label="95% Confidence")
+ax.plot(hours, model - 2 * map_sigma, "g--", lw="0.5")
 ax.legend()
 fig.savefig("jellyfish.png")
