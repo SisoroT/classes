@@ -57,37 +57,21 @@ fig, ax = plt.subplots(figsize=(9, 7))
 ax.set_title("Fashion Confusion Matrix")
 ax.set_xlabel("Predicted label")
 ax.set_ylabel("True label")
-disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=range(10))
-disp.plot(ax=ax, cmap=plt.cm.Blues)
 # change ticks to be the class names
-ax.set_xticklabels(
-    [
-        "t-shirt",
-        "trouser",
-        "pullover",
-        "dress",
-        "coat",
-        "sandal",
-        "shirt",
-        "sneaker",
-        "bag",
-        "ankle_boot",
-    ]
-)
-ax.set_yticklabels(
-    [
-        "t-shirt",
-        "trouser",
-        "pullover",
-        "dress",
-        "coat",
-        "sandal",
-        "shirt",
-        "sneaker",
-        "bag",
-        "ankle_boot",
-    ]
-)
+labels = [
+    "t-shirt",
+    "trouser",
+    "pullover",
+    "dress",
+    "coat",
+    "sandal",
+    "shirt",
+    "sneaker",
+    "bag",
+    "ankle_boot",
+]
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
+disp.plot(ax=ax, cmap=plt.cm.Blues)
 
 fig.savefig("confusion.png")
 print("Wrote confusion.png")
