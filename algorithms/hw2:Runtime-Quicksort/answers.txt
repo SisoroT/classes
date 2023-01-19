@@ -1,0 +1,40 @@
+Q1) Mysterious Function:
+
+O(logn) where n = the integer z. Since the recursive function is divided by 10 each time, we're making the
+problem smaller by a factor of 10 each time, for a total of log10(n) recursive calls.
+There's constant work going into each recursive call, so the worst-case runtime ends up being log10(n)*O(1) = O(logn).
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Q2) Exponentiation (Fast?):
+
+where n = p:
+    Best Case: O(1) if p = 0 or p = 1
+    Worst Case: O(logn) if p is even
+    Average Case: O(logn) if p is even
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Q3) QuickSort:
+
+Given the QuickSort implementation below, provide an 18-element list that will take the
+least number of recursive calls of QuickSort to complete.:
+
+algorithm QuickSort:
+    Input: lists of integers lst of size N
+    Output: new list with the elements of lst in sorted order
+
+if N < 2
+    return lst
+pivot = lst[N-1]
+left = new empty list
+right = new empty list
+for index i = 0, 1, 2, ... N-2
+    if lst[i] <= pivot
+        left.add(lst[i])
+else
+    right.add(lst[i])
+return QuickSort(left) + [pivot] + QuickSort(right)
+
+Best Case is when the pivot is always the middle element, so the list is split in half each time.
+[1, 3, 2, 6, 18, 16, 7, 4, 12, 9, 11, 17, 10, 14, 5, 13, 15, 8]
