@@ -1,0 +1,46 @@
+.cell {
+    border: 1px solid black;
+}
+
+/* top */
+header {
+    background: lightblue;
+}
+
+#header-image {
+    height: 5rem;
+}
+
+.nav {
+    margin: 10px;
+}
+
+/* body */
+main {
+    margin: 50px 50px 0px 50px;
+}
+
+#sidebar {
+    background: lightblue;
+    padding: 10px;
+}
+
+#body {
+    padding: 10px;
+}
+
+/* footer */
+footer {
+    border: 1px solid black;
+    margin: 0px 50px 50px 50px;
+    display: flex;
+    padding: 10px;
+}
+
+#footer-left {
+    flex-grow: 1;
+}
+
+#footer-right {
+    text-align: right;
+}
