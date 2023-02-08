@@ -1,8 +1,6 @@
 <?php
 
-function PrintMsg($msg) {
-  print(">> ".$msg."<br>");
+function PrintMsg($msg)
+{
+    print(">> " . $msg . "<br>");
 }
-
-?>
-
