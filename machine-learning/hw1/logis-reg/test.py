@@ -1,11 +1,14 @@
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 from scipy.io import loadmat
-from sklearn.model_selection import train_test_split
 
-# Load the Breast Cancer dataset from
-# data_breastcancer.mat and convert it to a dataframe
-data = loadmat("data_breastcancer.mat")
+# Load the Breast Cancer dataset and convert it to a dataframe
+mat = loadmat("data_breastcancer.mat")
+# Number of samples
+n = mat["data"]["n"][0][0][0][0]
+# Number of attributes
+d = mat["data"]["d"][0][0][0][0]
+# Input data
+X = mat["data"]["X"][0][0]
+# Output labels
+Y = mat["data"]["Y"][0][0].flatten()
 
-print(data)
+print(n)
