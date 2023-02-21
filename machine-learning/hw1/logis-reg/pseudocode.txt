@@ -1,0 +1,39 @@
+# Load dataset and split it into training and test sets
+data = load("data_breastcancer.mat")
+X_train, y_train, X_test, y_test = split(data)
+
+# Define sigmoid function
+function sigmoid(x):
+    return 1 / (1 + exp(-x))
+
+# Initialize weight vector with random values
+weight = random_vector()
+
+# Set learning rate and maximum number of iterations
+alpha = 0.01
+max_iter = 1000
+
+# Repeat until either convergence or maximum number of iterations is reached
+for i in range(max_iter):
+    # For each training example
+    for x, y in zip(X_train, y_train):
+        # Compute the predicted probability
+        pred = sigmoid(weight * x)
+        # Compute the error
+        error = y - pred
+        # Update the weight vector
+        weight = weight + alpha * error * x
+
+    # Evaluate the accuracy on the test set
+    accuracy = evaluate(weight, X_test, y_test)
+    print("Iteration", i, "Accuracy", accuracy)
+
+# To classify a new example x'
+function classify(weight, x'):
+    # Compute the predicted probability
+    pred' = sigmoid(weight * x')
+    # Assign it to class 1 if pred' >= 0.5 or class 0 otherwise
+    if pred' >= 0.5:
+        return 1
+    else:
+        return 0
