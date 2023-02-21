@@ -6,9 +6,16 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-# Load the Breast Cancer dataset and convert it to a dataframe
-data = loadmat("data_breastcancer.mat")
-df = pd.DataFrame(data)
+# Load the data file
+mat = loadmat("data_breastcancer.mat")
+# Number of samples
+n = mat["data"]["n"][0][0][0][0]
+# Number of attributes
+d = mat["data"]["d"][0][0][0][0]
+# Input data
+X = mat["data"]["X"][0][0]
+# Output labels
+Y = mat["data"]["Y"][0][0].flatten()
 
 
 def get_accuracy(fraction):
@@ -19,8 +26,8 @@ def get_accuracy(fraction):
     # Split the data into training and test sets with 2/3 for
     # training and 1/3 for testing using random_state as an argument
     X_train, X_test, y_train, y_test = train_test_split(
-        df.iloc[:, :-1],
-        df.iloc[:, -1],
+        X,
+        Y,
         train_size=fraction * 2 / 3,
         random_state=np.random.randint(100),
     )
@@ -65,8 +72,9 @@ for fraction in fractions:
 # Plot a line graph with fractions as x-axis
 # and average accuracy scores as y-axis
 fig, ax = plt.subplots()
-ax.plot(fractions, avg_scores)
-ax.set_xlabel("Fraction of training set")
-ax.set_ylabel("Average accuracy score")
+ax.plot(avg_scores, fractions)
+ax.set_xlabel("Average accuracy score")
+ax.set_ylabel("Size of training set")
 ax.set_title("Learning curve of logistic regression")
-plt.show()
+plt.savefig("logreg.png")
+# plt.show()

@@ -4,11 +4,15 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from sklearn.model_selection import train_test_split
 
-# Load the Breast Cancer dataset and convert it to a dataframe
-data = loadmat("data_breastcancer.mat")
-df = pd.DataFrame(data)
-X = df.values[:, :-1]
-Y = df.values[:, -1]
+mat = loadmat("data_breastcancer.mat")
+# Number of samples
+n = mat["data"]["n"][0][0][0][0]
+# Number of attributes
+d = mat["data"]["d"][0][0][0][0]
+# Input data
+X = mat["data"]["X"][0][0]
+# Output labels
+Y = mat["data"]["Y"][0][0].flatten()
 
 
 def sigmoid(x):
@@ -28,7 +32,7 @@ def get_accuracy(fraction):
         X,
         Y,
         train_size=fraction * 2 / 3,
-        random_state=np.random.randint(100),
+        random_state=42,
     )
 
     # Add a column of ones to the training and test sets for the intercept term
@@ -88,8 +92,10 @@ for fraction in fractions:
     avg_scores.append(avg_score)
 
 # Plot line graph with fractionsas x-axis and average accuracy scores as y-axis
-plt.plot(fractions, avg_scores)
-plt.xlabel("Fractionoftrainingset")
-plt.ylabel("Averageaccuracy score")
-plt.title("Learning curveoflogistic regression")
+fig, ax = plt.subplots()
+ax.plot(avg_scores, fractions)
+ax.set_xlabel("Average accuracy score")
+ax.set_ylabel("Size of training set")
+ax.set_title("Learning curve of logistic regression")
+# plt.savefig("logreg.png")
 plt.show()
