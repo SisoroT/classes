@@ -26,13 +26,12 @@ def get_accuracy(fraction):
     the accuracy score on the test set using logistic regression from
     scratch with no regularization (λ = 0)"""
 
-    # Split the data into training and test sets with 2/3 for training
-    # and 1/3 for testing using random_state as an argument
+    # Split the data into training and test sets
+    # with 2/3 for training and 1/3 for testing
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         Y,
         train_size=fraction * 2 / 3,
-        random_state=42,
     )
 
     # Add a column of ones to the training and test sets for the intercept term
@@ -91,11 +90,11 @@ for fraction in fractions:
     avg_score = np.mean(temp_scores)
     avg_scores.append(avg_score)
 
-# Plot line graph with fractionsas x-axis and average accuracy scores as y-axis
+# Plot line graph with fractions on x-axis and accuracy scores on y-axis
 fig, ax = plt.subplots()
-ax.plot(avg_scores, fractions)
-ax.set_xlabel("Average accuracy score")
-ax.set_ylabel("Size of training set")
+ax.plot(fractions, avg_scores, marker="o")
+ax.set_xlabel("Size of training set")
+ax.set_ylabel("Average accuracy score")
 ax.set_title("Learning curve of logistic regression")
-# plt.savefig("logreg.png")
-plt.show()
+plt.savefig("logreg.png")
+# plt.show()
