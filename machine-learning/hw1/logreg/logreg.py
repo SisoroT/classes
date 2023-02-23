@@ -1,31 +1,41 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from sklearn.model_selection import train_test_split
 
-mat = loadmat("data_breastcancer.mat")
-# Number of samples
-n = mat["data"]["n"][0][0][0][0]
-# Number of attributes
-d = mat["data"]["d"][0][0][0][0]
-# Input data
-X = mat["data"]["X"][0][0]
-# Output labels
-Y = mat["data"]["Y"][0][0].flatten()
+
+def load_data():
+    """
+    Load the Bupa liver disorders dataset.
+
+    Returns:
+        X (numpy.ndarray): Input data.
+        Y (numpy.ndarray): Target labels for input data.
+    """
+    mat = loadmat("data_breastcancer.mat")
+    # Number of samples
+    n = mat["data"]["n"][0][0][0][0]
+    # Number of attributes
+    d = mat["data"]["d"][0][0][0][0]
+    # Input data
+    X = mat["data"]["X"][0][0]
+    # Output labels
+    Y = mat["data"]["Y"][0][0].flatten()
+    return X, Y
 
 
 def sigmoid(x):
     """Define a sigmoid function that takes
-    an input x and returns 1 / (1 + exp(-x))"""
+    an input x and returns 1 / (1 + exp(-x))
+    """
     return 1 / (1 + np.exp(-x))
 
 
 def get_accuracy(fraction):
     """Define a function that takes a fraction of the training set and returns
     the accuracy score on the test set using logistic regression from
-    scratch with no regularization (λ = 0)"""
-
+    scratch with no regularization (λ = 0)
+    """
     # Split the data into training and test sets
     # with 2/3 for training and 1/3 for testing
     X_train, X_test, y_train, y_test = train_test_split(
@@ -66,35 +76,38 @@ def get_accuracy(fraction):
     return score
 
 
-# Define a list of fractions [.01, .02, .03, .125, .625, 1] and an empty
-# list to store the average accuracy scores
-fractions = [0.01, 0.02, 0.03, 0.125, 0.625, 1]
-avg_scores = []
+if __name__ == "__main__":
+    # Load the data
+    X, Y = load_data()
+    # Define a list of fractions [.01, .02, .03, .125, .625, 1] and an empty
+    # list to store the average accuracy scores
+    fractions = [0.01, 0.02, 0.03, 0.125, 0.625, 1]
+    avg_scores = []
 
-# For each fraction in the list:
-for fraction in fractions:
-    # Create an empty temporary list to storethe
-    # accuracy scores for each random split
-    temp_scores = []
+    # For each fraction in the list:
+    for fraction in fractions:
+        # Create an empty temporary list to storethe
+        # accuracy scores for each random split
+        temp_scores = []
 
-    # Repeat 5 times:
-    for _ in range(5):
+        # Repeat 5 times:
+        for _ in range(5):
 
-        # Call the function defined earlier with the fraction
-        # and append the accuracy score to the temporary list
-        score = get_accuracy(fraction)
-        temp_scores.append(score)
+            # Call the function defined earlier with the fraction
+            # and append the accuracy score to the temporary list
+            score = get_accuracy(fraction)
+            temp_scores.append(score)
 
-    # Compute the mean of the temporary list and
-    # append it to the average accuracy list
-    avg_score = np.mean(temp_scores)
-    avg_scores.append(avg_score)
+        # Compute the mean of the temporary list and
+        # append it to the average accuracy list
+        avg_score = np.mean(temp_scores)
+        avg_scores.append(avg_score)
 
-# Plot line graph with fractions on x-axis and accuracy scores on y-axis
-fig, ax = plt.subplots()
-ax.plot(fractions, avg_scores, marker="o")
-ax.set_xlabel("Size of training set")
-ax.set_ylabel("Average accuracy score")
-ax.set_title("Learning curve of logistic regression")
-plt.savefig("logreg.png")
-# plt.show()
+    # Plot line graph with fractions on x-axis and accuracy scores on y-axis
+    fig, ax = plt.subplots()
+    ax.plot(fractions, avg_scores, marker="o")
+    ax.set_xlabel("Size of training set")
+    ax.set_ylabel("Average accuracy score")
+    ax.set_title("Learning curve of logistic regression")
+    # plt.savefig("logreg.png")
+    plt.show()
