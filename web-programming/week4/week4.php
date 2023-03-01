@@ -9,7 +9,7 @@ require "function.php";
 
 <head>
     <title>Week 4 Assignment</title>
-    <script src="./jquery/jquery-3.6.0.min.js"></script>
+    <script src="./jquery/jquery-3.6.3.min.js"></script>
     <link rel="stylesheet" href="./foundation/css/foundation.css" />
     <script src="./foundation/js/vendor/foundation.js"></script>
     <link rel="stylesheet" href="style.css" />
