@@ -1,20 +1,19 @@
--- SELECT * FROM Players;
--- SELECT * FROM Teams;
--- SELECT * FROM Statistics;
--- SELECT * FROM Skins;
--- SELECT * FROM Buy;
--- SELECT * FROM Agents;
--- SELECT * FROM Own;
--- SELECT * FROM Companies;
--- SELECT * FROM Sponsor;
--- SELECT * FROM Tourneys;
--- SELECT * FROM Compete_In;
--- SELECT * FROM Modes;
--- SELECT * FROM Contain;
--- SELECT * FROM Series;
--- SELECT * FROM Maps;
--- SELECT * FROM Played_On;
--- SELECT * FROM Callouts;
+SELECT * FROM Players;
+SELECT * FROM Teams;
+SELECT * FROM Statistics;
+SELECT * FROM Skins;
+SELECT * FROM Buy;
+SELECT * FROM Agents;
+SELECT * FROM Own;
+SELECT * FROM Companies;
+SELECT * FROM Sponsor;
+SELECT * FROM Tourneys;
+SELECT * FROM Compete_In;
+SELECT * FROM Modes;
+SELECT * FROM Contain;
+SELECT * FROM Series;
+SELECT * FROM Maps;
+SELECT * FROM Callouts;
 
 -- 1. The database should let users create new tables that show only some parts of the data based on what they want to see.
 CREATE VIEW PlayersAndTeams AS
@@ -54,7 +53,8 @@ SELECT
     PlayerID,
     WinPCT
 FROM Statistics
-WHERE WinPCT >= 70;
+WHERE WinPCT >= 70
+ORDER BY WinPCT ASC;
 
 -- 6. The database should ensure data integrity and consistency by enforcing referential integrity and domain constraints on the entities and attributes.
 -- This will fail due to the domain constraint check in the `Players` table.

@@ -109,23 +109,18 @@ CREATE TABLE Series (
 );
 
 CREATE TABLE Maps (
-    MaName VARCHAR(30) PRIMARY KEY,
-    C1Score VARCHAR(2),
-    C2Score VARCHAR(2)
-);
-
-CREATE TABLE Played_On (
-    SeriesID INT,
+    MaID INT PRIMARY KEY,
     MaName VARCHAR(30),
-    PRIMARY KEY (SeriesID, MaName),
-    FOREIGN KEY (SeriesID) REFERENCES Series(SeriesID),
-    FOREIGN KEY (MaName) REFERENCES Maps(MaName)
+    C1Score VARCHAR(2),
+    C2Score VARCHAR(2),
+    SeriesID INT,
+    FOREIGN KEY (SeriesID) REFERENCES Series(SeriesID)
 );
 
 CREATE TABLE Callouts (
     CalloutID INT PRIMARY KEY,
     Name VARCHAR(30),
     Location VARCHAR(30),
-    MaName VARCHAR(30),
-    FOREIGN KEY (MaName) REFERENCES Maps(MaName)
+    MaID INT,
+    FOREIGN KEY (MaID) REFERENCES Maps(MaID)
 );
