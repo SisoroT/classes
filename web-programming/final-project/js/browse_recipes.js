@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchRandomRecipes().then(() => {
         const saveRecipeBtns = document.querySelectorAll('.save-recipe-btn')
         saveRecipeBtns.forEach((btn) => {
-            btn.addEventListener('click', function(event) {
+            btn.addEventListener('click', function (event) {
                 if (checkLoginStatus()) {
                     saveRecipe(event.target)
                 } else {
@@ -70,7 +70,7 @@ async function saveRecipe(target) {
         formData.append('cuisine', cuisine)
         formData.append('source', source)
 
-        const response = await axios.post('save_recipe.php', formData)
+        const response = await axios.post('php/save_recipe.php', formData)
         console.log('Response data:', response.data)
 
         alert(response.data.message)
@@ -80,7 +80,7 @@ async function saveRecipe(target) {
 }
 
 // Helper function to create a hash code from the title
-String.prototype.hashCode = function() {
+String.prototype.hashCode = function () {
     let hash = 0
     for (let i = 0; i < this.length; i++) {
         const chr = this.charCodeAt(i)

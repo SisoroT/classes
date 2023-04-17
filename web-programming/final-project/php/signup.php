@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             setcookie("login", 'logged_in', time() + 86400 * 30, "/");
             setcookie("user_id", $user_id, time() + 86400 * 30, "/");
-            header("location: index.html");
+            header("location: ../index.html");
         } else {
             echo "Error: " . $stmt->error;
         }

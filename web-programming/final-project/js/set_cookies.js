@@ -23,7 +23,7 @@ function deleteCookie(name) {
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const loginButton = document.querySelector('.login-btn')
 
     function checkLoginCookie() {
@@ -33,12 +33,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (checkLoginCookie()) {
         loginButton.textContent = 'Logout'
-        loginButton.addEventListener('click', function() {
+        loginButton.addEventListener('click', function () {
             document.cookie = 'login=logged_out; path=/'
             window.location.href = 'index.html' // Redirects to the homepage
         })
     } else {
-        loginButton.addEventListener('click', function() {
+        loginButton.addEventListener('click', function () {
             window.location.href = 'login_signup.html'
         })
     }

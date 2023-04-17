@@ -17,7 +17,7 @@ async function loadMyCollection() {
     try {
         const recipeContainer = document.querySelector('.recipe-container')
         recipeContainer.innerHTML = ''
-        const response = await axios.get('fetch_saved_recipes.php')
+        const response = await axios.get('php/fetch_saved_recipes.php')
         const savedRecipes = response.data
         displaySavedRecipes(savedRecipes)
     } catch (error) {
@@ -55,7 +55,7 @@ async function deleteRecipeFromCollection(recipeId) {
     try {
         const userId = getCookie('user_id')
 
-        const response = await fetch('delete_recipe.php', {
+        const response = await fetch('php/delete_recipe.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_id: userId, recipe_id: recipeId }),
