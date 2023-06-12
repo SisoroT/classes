@@ -1,4 +1,4 @@
-# University Computer Science Classes Repository
+# College Computer Science Classes
 
 Welcome to my GitHub repository where I document the assignments and projects from my various computer science classes at university. Below is a list of the classes and an overview of the topics covered in each:
 
